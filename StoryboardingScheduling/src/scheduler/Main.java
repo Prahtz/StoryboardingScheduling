@@ -11,6 +11,7 @@ public class Main {
 		TestAlg1k t1 = new TestAlg1k();
 		TestAlg2k t2 = new TestAlg2k();
 		TestAlgmk tm = new TestAlgmk();
+		//provagit
 		//System.out.println(t1.testSorting());
 		//System.out.println(t1.testScheduleActiveJob());
 		//System.out.println(t1.testProcessPhase());
