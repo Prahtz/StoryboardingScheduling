@@ -26,13 +26,26 @@ public class Service {
 		return beta;
 	}
 	
-	public static int generateK(double beta) {
+	public static int generateKAlg1k(double beta) {
 		int k;
 		if (beta <= (2 / 3))
 			k = 1;
 		else
-			k = (int) Math.floor(-Math.log(2) / Math.log(beta)) + 1;
+			k = (int) Math.floor(-(Math.log(2) / Math.log(beta))) + 1;
 		return k;
+	}
+	
+	public static int generateKAlg2k(double beta) {
+		double c = 1 + (1 + Math.sqrt(5))/2;
+		return (int) Math.floor(-0.5 * (Math.log(c) / Math.log(beta))) + 1;
+	}
+	
+	public static int generateKAlgmk(double beta) {
+		return (int) Math.floor((Math.log(2 - Math.sqrt(2)) / Math.log(beta))) + 1;
+	}
+	
+	public static int generateM(int jobNumber) {
+		return random.nextInt(jobNumber) + 1;
 	}
 	
 	public static void printJobList(LinkedList<Job> list) {

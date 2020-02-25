@@ -9,12 +9,28 @@ public class TestAlg1k {
 		
 	}
 	
+	public boolean testCompetitiveRatio() {
+		int jobNumber = 10000;
+		int n = 1000;
+		int c = 4;
+		for(int i = 0; i < n; i++) {
+			double beta = Service.generateBeta();
+			int k = Service.generateKAlg1k(beta);
+			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
+			Alg1k alg = new Alg1k(k, beta, totalJobs);
+			Chop chop = new Chop(beta, totalJobs);
+			if(c * alg.start() < chop.start())
+				return false;
+		}
+		return true;
+	}
+	
 	public boolean testScheduleActiveJob() {
 		int jobNumber = 1000;
 		int n = 1000;
 		for(int i = 0; i < n; i++) {
 			double beta = Service.generateBeta();
-			int k = Service.generateK(beta);
+			int k = Service.generateKAlg1k(beta);
 			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
 			Alg1k a1 = new Alg1k(k, beta, totalJobs);
 			for(int j = 0; j <= jobNumber; j++) {
@@ -36,7 +52,7 @@ public class TestAlg1k {
 		int n = 1000;
 		for(int i = 0; i < n; i++) {
 			double beta = Service.generateBeta();
-			int k = Service.generateK(beta);
+			int k = Service.generateKAlg1k(beta);
 			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
 			Alg1k a1 = new Alg1k(k, beta, totalJobs);
 			a1.scheduleActiveJobs(jobNumber);
@@ -61,7 +77,7 @@ public class TestAlg1k {
 			double expectedValue1 = 0;
 			double expectedValue2 = 0;
 			double beta = Service.generateBeta();			
-			int k = Service.generateK(beta);
+			int k = Service.generateKAlg1k(beta);
 			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
 			Alg1k a1 = new Alg1k(k, beta, totalJobs);
 			for(int phaseNumber = 0; !a1.getTotalJobs().isEmpty() || !a1.getActiveJobs().isEmpty(); phaseNumber++) {

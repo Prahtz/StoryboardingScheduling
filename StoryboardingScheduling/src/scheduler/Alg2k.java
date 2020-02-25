@@ -69,7 +69,6 @@ public class Alg2k {
 	}
 	
 	public double processPhase(int phaseNumber, double expectedValue, LinkedList<Job> S) {
-		printJobList(S);
 		if(!S.isEmpty()) {
 			int actualTimeUnit = phaseNumber*k;
 			ListIterator<Job> si = S.listIterator();
@@ -86,21 +85,6 @@ public class Alg2k {
 					break;
 				}
 			}
-			/*
-			Job j = si.next();
-			for(int i = 0; i < k; i++, actualTimeUnit++) {
-				expectedValue = expectedValue + Math.pow(beta, actualTimeUnit) * j.getValue();
-				j.setLength(j.getLength() - 1);
-				if(j.getLength() == 0) 
-					if (si.hasNext() && i != k - 1)
-						j = si.next();
-					else
-						break;
-				else if(i == k) {
-					preemptedJob = j;
-					activeJobs.add(j);
-				}
-			}*/
 		}
 		return expectedValue;
 	}

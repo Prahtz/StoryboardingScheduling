@@ -6,6 +6,22 @@ import java.util.ListIterator;
 public class TestAlg2k {
 	public TestAlg2k() {}
 	
+	public boolean testCompetitiveRatio() {
+		int jobNumber = 1000;
+		int n = 10000;
+		double c = 1 + (1 + Math.sqrt(5))/2;
+		for(int i = 0; i < n; i++) {
+			double beta = Service.generateBeta();
+			int k = Service.generateKAlg1k(beta);
+			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
+			Alg2k alg = new Alg2k(k, beta, totalJobs);
+			Chop chop = new Chop(beta, totalJobs);
+			if(c * alg.start() < chop.start())
+				return false;
+		}
+		return true;
+	}
+	
 	public boolean testCreateScheduleAndProcessPhase() {
 		int jobNumber = 1000;
 		int n = 1000;
@@ -13,7 +29,7 @@ public class TestAlg2k {
 			double expectedValue1 = 0;
 			double expectedValue2 = 0;
 			double beta = Service.generateBeta();
-			int k = Service.generateK(beta);
+			int k = Service.generateKAlg2k(beta);
 			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
 			Alg2k a2 = new Alg2k(k, beta, totalJobs);
 			Job preemptedJob = null;
