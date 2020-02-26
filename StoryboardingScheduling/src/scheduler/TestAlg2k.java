@@ -8,7 +8,7 @@ public class TestAlg2k {
 	
 	public boolean testCompetitiveRatio() {
 		int jobNumber = 1000;
-		int n = 10000;
+		int n = 1000;
 		double c = 1 + (1 + Math.sqrt(5))/2;
 		for(int i = 0; i < n; i++) {
 			double beta = Service.generateBeta();

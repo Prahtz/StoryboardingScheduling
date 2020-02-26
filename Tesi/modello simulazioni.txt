@@ -1,0 +1,34 @@
+beta:
+tra 0 escluso e 0.1 escluso
+tra 0.1 incluso e 0.2 escluso
+.
+.
+.
+tra 0.9 incluso e 1 escluso
+
+per ogni test calcolo direttamente:
+-costante c
+-valore algoritmo online
+-valore algoritmo offline
+-scelta di k
+-scelta di m nel caso del terzo algoritmo
+e calcolo indirettamente:
+-grafici
+
+Due macro simulazioni: 
+-Input random (numero di input da generare fissato)
+-Intput scelti (ad esempio quelli "peggiori")
+
+Per ogni input, sia random che scelto:
+-Simulazioni con beta diversi, nello specifico:
+tra 0 escluso e 0.1 escluso
+tra 0.1 incluso e 0.2 escluso
+.
+.
+.
+tra 0.9 incluso e 1 escluso
+tra 0 e 2/3 per ALG1k
+tra 2/3 e 1 per ALG1k
+//todo
+
+In ogni test andranno confrontati i risultati ottenuti con i relativi limiti teorici.

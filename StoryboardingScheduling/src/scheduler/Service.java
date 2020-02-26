@@ -18,6 +18,13 @@ public class Service {
 		return list;
 	}
 	
+	public static LinkedList<Job> generateRandomInput(int jobNumber) {
+		LinkedList<Job> list = new LinkedList<Job>();
+		for (int i = 0; i < jobNumber; i++)
+			list.add(new Job(i, random.nextInt(jobNumber) + 1, random.nextInt(jobNumber) + 1, random.nextInt(jobNumber) + 1));
+		return list;
+	}
+	
 	public static double generateBeta() {
 		double beta;
 		do
@@ -64,6 +71,16 @@ public class Service {
 		}
 		return r;
 	}
+
+	public static double generateSmallBetasAlg1k() {
+		double beta;
+		do
+			beta = random.nextDouble();
+		while (beta == 0 || beta >= (double) 2/3);
+		return beta;
+	}
+
+
 }
 
 
