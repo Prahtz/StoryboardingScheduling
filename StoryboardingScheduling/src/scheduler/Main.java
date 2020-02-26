@@ -16,6 +16,8 @@ public class Main {
 		//System.out.println(t1.testProcessPhase());
 		//System.out.println(tm.testProcessPhase());
 		System.out.println(t2.testCompetitiveRatio());
+		//System.out.println(t2.testCompetitiveRatio());
+		
 	}
 
 	private static void start() {
