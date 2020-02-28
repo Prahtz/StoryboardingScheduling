@@ -52,7 +52,7 @@ public class Alg1k {
 			ai.remove();
 			for(int i = 0; i < k; i++, actualTimeUnit++) {
 				expectedValue = expectedValue + Math.pow(beta, actualTimeUnit) * j.getValue();
-				j.setLength(j.getLength() - 1);
+				j.setLength(j.getLength() - 1); 
 				if(j.getLength() == 0) 
 					if (ai.hasNext() && i != k - 1) {
 						j = ai.next();

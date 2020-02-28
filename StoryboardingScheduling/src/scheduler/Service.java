@@ -29,7 +29,7 @@ public class Service {
 		double beta;
 		do
 			beta = random.nextDouble();
-		while (beta == 0);
+		while (beta == 0 || beta == 1);
 		return beta;
 	}
 	
