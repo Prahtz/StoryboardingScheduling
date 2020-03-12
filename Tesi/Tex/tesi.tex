@@ -173,6 +173,38 @@ $$ = ALG2_{k}(\sigma) + w((n + 2)k, \infty , v_{i_{p}}).$$
 
 Ricordiamo che il job $i_{p}$ è quello con il valore unitario più piccolo tra i job schedulati in $S(P_{n})$. Pertanto $ALG2_{k}(\sigma) \geq w((n - 1) k, k, v_{i_{p}}) = \beta^{(n - 1)k} (1 - \beta^{k}) / (1 -\beta) \cdot v_{i_{p}}$. Inoltre $w((n + 2) k, \infty, v_{i_{p}}) = \beta^{(n + 2) k} / (1 - \beta) v_{i_{p}}$. Concludiamo dicendo che $CHOP(\sigma) / ALG2_{k}(\sigma) \leq 1 + \beta^{3k} / (1 - \beta^{k})$.
 
+Lemma 9 Sia $\sigma$ un segmento costituito da almeno due fasi. Se $\sigma$ è costituito da due fasi, supponiamo che la prima sia una fase pre-abbandonata. Se $\sigma$ è costituito da tre fasi, supponiamo che il valore unitario del job pre-abbandonato nella prima fase sia almeno pari a quello del job pre-abbandonato nella terza fase. Allora vale $CHOP(\sigma) / ALG2_{k}(\sigma) \leq max\{1 / \beta^{k - 1}, 1 / (1 - \beta^{2k})\}.$
+Dimostrazione
+Studiamo innanzitutto il caso in cui $\sigma$ consiste esattamente in due fasi $P_{n}$ e $P_{n+1}$. Poiché $P_{n}$ è una fase pre-abbandonata, per come sono costruiti i segmenti a 2 fasi, $P_{n}$ non è preceduto da una fase continua. Poiché né $P_{n}$ né $P_{n+1}$ sono preceduti da una fase continua, tutti i job di $J_{n}$ e $J_{n+1}$ vengono avviati rispettivamente in $S(P_{n})$ e $S(P_{n+1})$ e gli insiemi $J'_{n}$ e $J'_{n+1}$ sono vuoti. Quindi $t_{S}(i) = t_{S'}(i)$, $\forall i \in J_{n} \cup J_{n+1}$. Otteniamo
+
+$$ALG2_{k} (\sigma) = \sum_{i \in J_{n}} w (t_{S'}(i), \delta_{i,n}, v_{i}) + \sum_{i \in J_{n + 1}} w (t_{S'}(i), \delta_{i, n + 1}, v_{i}).$$ $\hfill (1)$
+
+Poiché $t_{S}(i) = t_{S'}(i) \leq t_{S^{*}}(i)$, $\forall i \in J_{n} \cup J_{n+1}$, $CHOP$ non può ottenere un valore più elevato per i job e le porzioni di job schedulati da $ALG2_{k}$ in $\sigma$. Può ottenere solo un valore aggiuntivo per la porzione di job che è stata pre-abbandonata in $S(P_{n})$. Sia $i_{p}$ il job pre-abbandonato. Questo job è schedulato per ultimo in $S(P_{n})$. È quello con il valore unitario più piccolo tra i job schedulati in $S(P_{n})$. Inoltre, ha un valore unitatio strettamente inferiore rispetto a qualsiasi job schedulato in $S(P_{n+1})$ perché altrimenti $ALG2_{k}$ avrebbe incluso il job $i_{p}$ nello schedule $S(P_{n+1})$. Per il Lemma 7 $CHOP$ non schedula il job $i_{p}$ nella fase $P_{n+1}$. Poiché $t_{S'}(i_{p}) \leq t_{S^{*}}(i_{p})$, $CHOP$ può schedulare al massimo $\delta_{i_{p}, n}$ unità di tempo del job $i_{p}$ prima della fine di $P_{n}$. Quindi il valore addizionale di $CHOP$ ottenuto nell'elaborazione della porzione pre-abbandonata di $i_{p}$ è al massimo $w((n + 1) k, \infty, v_{i_{p}})$. Dunque
+
+$$CHOP (\sigma) \leq ALG2_{k} (\sigma) + w((n + 1) k, \infty, v_{i_{p}}).$$ $\hfill (2)$
+
+In $S(P_{n})$ e $S(P_{n+1})$ tutti i job hanno un valore unitario di almeno $v_{i_{p}}$. Quindi $ALG2_{k} (\sigma) \geq \beta^{(n - 1)k}(1 - \beta^{2k}) / (1 - \beta) \cdot v_{i_{p}}$. Tenendo conto che $w ((n +1) k, \infty, v_{i_{p}}) = \beta^{(n + 1) k} / (1 - \beta) v_{i_{p}}$ concludiamo che $CHOP(\sigma) / ALG2_{k}(\sigma) \leq 1 + \beta^{2k} / (1 - \beta^{2k}) = 1 / (1 - \beta^{2k})$.
+Consideriamo quindi il caso in cui $\sigma$ è costituito da tre fasi $P_{n}$, $P_{n+1}$, $P_{n+2}$ e che il job pre-abbandonato nella prima fase ha un valore per unità che è almeno pari a quello del job pre-abbandonato nella terza fase. Per definizione di un segmento trifase, $P_{n}$ è una fase anticipata che non è preceduta da una fase continua e $P_{n+1}$ è una fase continua. Questa combinazione di fasi è stata analizzata sopra. Sia $\sigma_{1}$ il sottosegmento costituito dalle fasi $P_{n}$ e $P_{n+1}$. Usando (1) e (2), otteniamo
+
+$$ALG2_{k} (\sigma_{1}) = \sum_{i \in J_{n}} w(t_{S'}(i), \delta_{i, n}v_{i}) + \sum_{i\in J_{n+1}} w (t_{S'}(i), \delta_{i, n + 1} v_{i})$$
+
+e
+$$CHOP (\sigma_{1}) \leq ALG2_{k} (\sigma_{1}) + w ((n + 1) k, \infty, v_{i_{p}}),$$ $\hfill (3)$
+
+dove $i_{p}$ è di nuovo il job pre-abbandonato in $S (P_{n})$.
+Sia $\sigma_{2}$ il sottosegmento costituito dalla terza fase $P_{n+2}$ e sia $i_{1} = i^{1}_{n+2}$ il job schedulato all'inizio di $P_{n+2}$. Allora
+
+$$ALG2_{k} (\sigma_{2}) = w ((n + 1) k, \delta_{i_{1}, n + 2}, v_{i_{1}}) + \sum_{i \in J'_{n+2}} w(t_{S'}(i) + \delta_{i_{1}, n+2}, \delta_{i}, v_{i})$$
+$$+ \sum_{i \in J_{n + 2} \setminus (J'_{n + 2} \cup \{i_{1}\})} w(t_{S'}(i), \delta_{i}, v_{i})$$
+
+$$\geq \beta^{k - 1}\Bigg( w((n + 1) k, \delta_{i_{1},n+2}, v_{i_{1}}) + \sum_{i \in J_{n + 2} \setminus \{i_{1}\}} w(t_{S'}(i), \delta_{i}, v_{i}) \Bigg).$$
+
+La disuguaglianza è valida perché qualsiasi $i \in J'_{n+2}$ è ritardato di al massimo $k - 1$
+unità di tempo e quindi $w(t_{S'}(i) + \delta_{i_{1}, n + 2}, \delta_{i}, v_{i}) = \beta^{\delta_{i_{1}, n + 2}} w (t_{S'}(i), \delta_{i, n + 2}, v_{i}) \geq \beta^{k - 1}w (t_{S'}(i) , \delta_{i, n + 2}, v_{i})$, $\forall i \in J'_{n+2}$.
+Sia $i'_{p}$ il job pre-abbandonato in $S(P_{n+2})$. Per assuzione questo job ha un valore per unità che è limitato superiormente dal valore unitario di $i_{p}$. Il valore aggiuntivo ottenuto da $CHOP$ nello schedulare le porzioni pre-abbandonate di $i_{p}$ e $i'_{p}$ è limitato superiormente dal termine $w ((n + 1) k, \infty, v_{i_{p}})$ in (3), che, di nuovo, è il valore ottenuto nello schedulare un job infinitamente lungo di valore unitario $v_{i_{p}}$ a partire dal tempo $(n + 1) k$. Abusando leggermente della notazione, sia
+$$CHOP(\sigma_{2}) = w ((n + 1) k, \delta_{i_{1}, n}, v_{i_{1}}) + \sum_{i \in J_{n+2} \setminus \{i_{1}\}} w (t_{S'}(i), \delta_{i, n}, v_{i})$$ 
+il valore ottenibile da $CHOP$ nell'elaborazione i job e le porzioni di job di $S(P_{n+2})$. Valgono dunque $ALG2_{k} (\sigma) = ALG2_{k} (\sigma_{1}) + ALG2_{k} (\sigma_{2})$ e $CHOP(\sigma) \leq CHOP (\sigma_{1}) + CHOP (\sigma_{2})$. Quindi $CHOP (\sigma) / ALG2_{k} (\sigma) \leq max \{CHOP(\sigma_{1}) / ALG2_{k}(\sigma_{1}), CHOP(\sigma_{2}) / ALG2_{k}(\sigma_{2}),\}$. Come mostrato sopra, il primo rapporto è limitato superiormente da $1 / (1 - \beta^{2k})$. Il secondo rapporto è al massimo $1 / \beta^{k - 1}$. $\hfill \square$
+
 
 \section{$ALG(m)_{k}$}
 Il terzo algoritmo, chiamato $ALG(m)_{k}$, crea uno schedule ottimale per ogni k-fase $P_{n}$ considerando m macchine parallele. Formalmente $ALG(m)_{k}$ funziona come segue. Di nuovo, sia $Q_{n}$ l’insieme dei jobs $i$ che sono arrivati entro l’inizio di $P_{n}$, cioè $a_{i} \leq (n - 1)k$, e che non sono stati schedulati nelle fasi precedenti $P_{1}, … , P_{n}$. Per ogni $t = (n-1)k, … , nk - 1$ $ALG(m)_{k}$ determina gli m jobs che hanno il più alto valore unitario tra i jobs di $Q_{n}$ che non hanno terminato al tempo t. Ognuno di questi è schedulato per una sola unità di tempo. Se un job era già stato schedulato al tempo $t-1$, allora viene assegnato alla stessa macchina al tempo $t$. Se, tra i jobs che non hanno terminato di $Qn$, l’m-esimo valore unitario più grande è $v$ ed esistono diversi jobs che hanno questo valore, allora viene data la precedenza a quei job che erano già stati schedulati precedentemente. I jobs non ancora iniziati invece vengono considerati in ordine crescente di tempo di arrivo. Se alla fine di $P_{n}$ ci sono jobs schedulati che non hanno terminato, vengono pre-rilasciati. $ALG(m)_{k}$ esegue questo schedule per $P_{n}$, ignorando i jobs che potrebbero arrivare durante la fase a tempi $t = (n-1)k + 1, …, nk - 1$.
