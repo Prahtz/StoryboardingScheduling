@@ -50,7 +50,8 @@ public class Alg2k {
 		LinkedList<Job> S = new LinkedList<Job>();
 		if(!activeJobs.isEmpty()) {
 			ListIterator<Job> it = activeJobs.listIterator();
-			for(int i = 0; i < k;) {
+			int i = 0;
+			for(i = 0; i < k;) {
 				if(it.hasNext()) {
 					Job j = it.next();
 					it.remove();
@@ -60,8 +61,11 @@ public class Alg2k {
 				else
 					break;
 			}
-			if(preemptedJob != null && S.remove(preemptedJob))
+			if(preemptedJob != null && S.remove(preemptedJob)) {
+				if(preemptedJob.getLength() >= k && !S.isEmpty()) 
+					preemptedJob.setLength(k - (i - preemptedJob.getLength()));
 				S.addFirst(preemptedJob);
+			}
 		}
 		activeJobs.remove(preemptedJob);
 		preemptedJob = null;
@@ -79,7 +83,7 @@ public class Alg2k {
 					expectedValue = expectedValue + Math.pow(beta, actualTimeUnit) * j.getValue();
 					j.setLength(j.getLength() - 1);
 				}
-				if(j.getLength() != 0) {
+				if(i >= k && j.getLength() != 0) {
 					preemptedJob = j;
 					activeJobs.add(j);
 					break;

@@ -22,7 +22,7 @@ public class TestAlg1k {
 			int k = Service.generateKAlg1k(beta);
 			c = 1/(Math.pow(beta, k-1) * (1 - Math.pow(beta,k)));
 			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
-			Alg1k alg = new Alg1k(k, beta, totalJobs);
+			Alg1k alg = new Alg1k(k, beta, Service.cloneList(totalJobs));
 			QuantizedChop chop = new QuantizedChop(k, beta, totalJobs);
 			if(c * alg.start() < (1/Math.pow(beta, k-1)) * chop.start())
 				return false;

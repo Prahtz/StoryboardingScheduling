@@ -18,9 +18,9 @@ public class Main {
 		//System.out.println(t1.testProcessPhase());
 		//System.out.println(tm.testProcessPhase());
 		//System.out.println(t2.testCompetitiveRatio());
-		//System.out.println(t2.testCompetitiveRatio());
 		//tc.testStart();
 		//System.out.println(t1.testAndWriteResults());
-		t1.startTesting();
+		//t1.startTesting();
+		t2.testWorstCase();
 	}
 }
