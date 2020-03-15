@@ -27,7 +27,7 @@ public class Alg1k {
 		return expectedValue;
 	}
 	
-	public void scheduleActiveJobs(int phaseNumber) {
+	private void scheduleActiveJobs(int phaseNumber) {
 		int actualTimeUnit = phaseNumber*k;
 		Job j;
 		ListIterator<Job> ti = totalJobs.listIterator();
@@ -40,11 +40,11 @@ public class Alg1k {
 		}
 	}
 	
-	public void sortActiveJobs() {
+	private void sortActiveJobs() {
 		activeJobs.sort(new JobComparator());
 	}
 	
-	public double processPhase(int phaseNumber, double expectedValue) {
+	private double processPhase(int phaseNumber, double expectedValue) {
 		if(!activeJobs.isEmpty()) {
 			int actualTimeUnit = phaseNumber*k;
 			ListIterator<Job> ai = activeJobs.listIterator();
