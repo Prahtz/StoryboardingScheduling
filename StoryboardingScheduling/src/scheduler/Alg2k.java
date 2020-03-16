@@ -7,14 +7,14 @@ public class Alg2k {
 	private int k;
 	private LinkedList<Job> totalJobs;
 	private LinkedList<Job> activeJobs;
-	private Job preemptedJob;
+	private Job interruptedJob;
 	
 	public Alg2k(int k, double beta, LinkedList<Job> totalJobs) {
 		this.k = k;
 		this.beta = beta;
 		this.totalJobs = totalJobs;
 		this.activeJobs = new LinkedList<Job>();
-		this.preemptedJob = null;
+		this.interruptedJob = null;
 	}
 	
 	public double start() {
@@ -51,7 +51,7 @@ public class Alg2k {
 		if(!activeJobs.isEmpty()) {
 			ListIterator<Job> it = activeJobs.listIterator();
 			int i = 0;
-			for(i = 0; i < k;) {
+			while(i < k) {
 				if(it.hasNext()) {
 					Job j = it.next();
 					it.remove();
@@ -61,14 +61,17 @@ public class Alg2k {
 				else
 					break;
 			}
-			if(preemptedJob != null && S.remove(preemptedJob)) {
-				if(preemptedJob.getLength() >= k && !S.isEmpty()) 
-					preemptedJob.setLength(k - (i - preemptedJob.getLength()));
-				S.addFirst(preemptedJob);
+			
+			if(interruptedJob != null && S.contains(interruptedJob)) {
+				Job lastJob = S.getLast();
+				S.remove(interruptedJob);
+				if(i > k && lastJob.equals(interruptedJob) && !S.isEmpty()) 
+					interruptedJob.setLength(k - (i - interruptedJob.getLength()));
+				S.addFirst(interruptedJob);
 			}
 		}
-		activeJobs.remove(preemptedJob);
-		preemptedJob = null;
+		activeJobs.remove(interruptedJob);
+		interruptedJob = null;
 		return S;
 	}
 	
@@ -79,12 +82,14 @@ public class Alg2k {
 			int i = 0;
 			while(si.hasNext()) {
 				Job j = si.next();
-				for(; i < k && j.getLength() != 0; i++, actualTimeUnit++) {
+				while(i < k && j.getLength() != 0) {
 					expectedValue = expectedValue + Math.pow(beta, actualTimeUnit) * j.getValue();
 					j.setLength(j.getLength() - 1);
+					i++; 
+					actualTimeUnit++;
 				}
 				if(i >= k && j.getLength() != 0) {
-					preemptedJob = j;
+					interruptedJob = j;
 					activeJobs.add(j);
 					break;
 				}
@@ -116,8 +121,8 @@ public class Alg2k {
 		System.out.println();
 	}
 
-	public Job getPreemptedJob() {
-		return preemptedJob;
+	public Job getInterruptedJob() {
+		return interruptedJob;
 	}
 }
 

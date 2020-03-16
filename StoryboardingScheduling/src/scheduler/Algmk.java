@@ -52,7 +52,6 @@ public class Algmk {
 		for(int i = 0; i < m && !activeJobs.isEmpty(); i++)
 			machines[i] = activeJobs.poll();
 		for(int i = 0; i < k; i++, actualTimeUnit++) {
-			printJobArray(machines);
 			for(int j = 0; j < machines.length; j++) {
 				if(machines[j] != null) {
 					expectedValue = expectedValue + Math.pow(beta, actualTimeUnit) * machines[j].getValue();

@@ -21,8 +21,8 @@ public class Main {
 		//tc.testStart();
 		//System.out.println(t1.testAndWriteResults());
 		//t1.startTesting();
-		//t2.testWorstCase();
-		t2.startTesting();
+		t2.testWorstCase();
+		//t2.startTesting();
 		
 	}
 }
