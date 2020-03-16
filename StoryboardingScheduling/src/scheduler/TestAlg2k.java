@@ -32,26 +32,34 @@ public class TestAlg2k {
 	}
 	
 	public void testWorstCase() {
-		//int max = Integer.MAX_VALUE;
-		int max = 9999999;
-		double beta = 0.7;
+
+		int max = 999999999;
+		double beta = 0.999999;
 		int k = Service.generateKAlg2k(beta);
+		if (k==1) return;
 		LinkedList<Job> totalJobs = new LinkedList<Job>();
-		int n = 10000;
-		for(int i = 0, j = 0; j < n; i+=4,j++) {
-			totalJobs.add(new Job(i,i,0,k));
-			totalJobs.add(new Job(i+1,i,1,1));
+		
+		int n = 10;
+		for(int i = 0, j = 0; j < n; i+=2*k,j++) {
+			totalJobs.add(new Job(i, i, 0, k));
+			totalJobs.add(new Job(i+1, i, 1, k - 1));
 		}
-		for(int i = 2, j = 0; j < n; i+=4, j++) {
-			totalJobs.add(new Job(i,i,max,1));
+		for(int i = k, j = 0; j < n; i+=2*k, j++) {
+			totalJobs.add(new Job(i, i, max, 1));
 		}
 
 		
 		Alg2k alg = new Alg2k(k, beta, Service.cloneList(totalJobs));
 		QuantizedChop chop = new QuantizedChop(k, beta, totalJobs);
 		double a = alg.start();
+		System.out.println("oo");
 		double qc = chop.start();
+		System.out.println("oo");
+		double c = 1/(Math.pow(beta, k-1)) *  max(1/Math.pow(beta,k-1), 
+				1/(1 - Math.pow(beta, 2*k)), 1 + (Math.pow(beta, 3*k) / (1 - Math.pow(beta, k))));
 		System.out.println(k + " " + a + " " + qc);
+		System.out.println(c * a >= 1/(Math.pow(beta, k-1)) * qc);
+		System.out.println(c * a + " " + 1/(Math.pow(beta, k-1)) * qc);
 	}
 	
 	public boolean testAndWriteResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
@@ -93,10 +101,14 @@ public class TestAlg2k {
 		LinkedList<LinkedList<Job>> inputList = new LinkedList<LinkedList<Job>>();
 		for(int i = 0; i < n; i++)
 			inputList.add(Service.generateRandomInput(jobNumber, 4));
-		testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG2k0and0_3.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0.3, 0.6), "ALG2k0_3and0_6.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0.6, 0.8), "ALG2k0_6and0_8.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0.8, 1), "ALG2k0_8and1.csv");
+		if(!testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG2k0and0_3.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0.3, 0.6), "ALG2k0_3and0_6.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0.6, 0.8), "ALG2k0_6and0_8.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0.8, 1), "ALG2k0_8and1.csv"))
+			System.out.println(false);
 	}
 	
 	private BetaGenerator getBetaGenerator(double a, double b) {
