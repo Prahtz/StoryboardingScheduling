@@ -30,6 +30,11 @@ public class TestAlg1k {
 		return true;
 	}
 	
+	public boolean testWorstCase() {
+		
+		return false;
+	}
+	
 	public boolean testAndWriteResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
 		File f = new File("csv/" + fileName);
 		f.delete();
@@ -41,7 +46,7 @@ public class TestAlg1k {
 			double beta = bg.generateBeta();
 			int k = Service.generateKAlg1k(beta);
 			double c = 1/(Math.pow(beta, k-1) * (1 - Math.pow(beta,k)));
-			fw.write(beta + ";" + k + ";" + c + "\n;");
+			fw.write(beta + ";" + k + ";" + c + ";\n");
 			while(it.hasNext()) {
 				LinkedList<Job> input = it.next();
 				Alg1k alg = new Alg1k(k, beta, Service.cloneList(input));
@@ -64,10 +69,11 @@ public class TestAlg1k {
 	
 	public void startTesting() throws IOException {
 		int n = 1000;
-		int jobNumber = 1000;
+		int jobNumber = 100;
+		int lengthFactor = 4;
 		LinkedList<LinkedList<Job>> inputList = new LinkedList<LinkedList<Job>>();
 		for(int i = 0; i < n; i++)
-			inputList.add(Service.generateRandomInput(jobNumber, 4));
+			inputList.add(Service.generateRandomInput(lengthFactor, jobNumber));
 		testAndWriteResults(inputList, getBetaGenerator(0, (double)2/3), "ALG1kSmallBetas.csv");
 		testAndWriteResults(inputList, getBetaGenerator((double)2/3, 1), "ALG1kBigBetas.csv");
 		testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG1k0and0_3.csv");

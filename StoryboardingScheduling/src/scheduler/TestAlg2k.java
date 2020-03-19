@@ -32,14 +32,19 @@ public class TestAlg2k {
 	}
 	
 	public void testWorstCase() {
-
-		int max = 999999999;
-		double beta = 0.999999;
+		int max = 10000000;
+		double beta = 0.86;
 		int k = Service.generateKAlg2k(beta);
-		if (k==1) return;
-		LinkedList<Job> totalJobs = new LinkedList<Job>();
+		Alg2k alg;
+		QuantizedChop chop;
+		double a,qc;
+		double c = 1/(Math.pow(beta, k-1)) *  max(1/Math.pow(beta,k-1), 
+				1/(1 - Math.pow(beta, 2*k)), 1 + (Math.pow(beta, 3*k) / (1 - Math.pow(beta, k))));
 		
-		int n = 10;
+		//if (k==1) return;
+		LinkedList<Job> totalJobs = new LinkedList<Job>();
+		/*
+		int n = 100;
 		for(int i = 0, j = 0; j < n; i+=2*k,j++) {
 			totalJobs.add(new Job(i, i, 0, k));
 			totalJobs.add(new Job(i+1, i, 1, k - 1));
@@ -52,14 +57,29 @@ public class TestAlg2k {
 		Alg2k alg = new Alg2k(k, beta, Service.cloneList(totalJobs));
 		QuantizedChop chop = new QuantizedChop(k, beta, totalJobs);
 		double a = alg.start();
-		System.out.println("oo");
 		double qc = chop.start();
-		System.out.println("oo");
-		double c = 1/(Math.pow(beta, k-1)) *  max(1/Math.pow(beta,k-1), 
-				1/(1 - Math.pow(beta, 2*k)), 1 + (Math.pow(beta, 3*k) / (1 - Math.pow(beta, k))));
+
+		System.out.println(k + " " + a + " " + qc);
+		System.out.println(c * a >= 1/(Math.pow(beta, k-1)) * qc);
+		System.out.println(c * a + " " + 1/(Math.pow(beta, k-1)) * qc);*/
+		
+		totalJobs = new LinkedList<Job>();
+		int maxL = max;
+		
+		totalJobs.add(new Job(0, 0, max - 1, maxL));
+		totalJobs.add(new Job(1, k, max, 1));
+		
+		alg = new Alg2k(k, beta, Service.cloneList(totalJobs));
+		chop = new QuantizedChop(k, beta, totalJobs);
+		
+		a = alg.start();
+		qc = chop.start();
+		//qc = chop.start();
+		
 		System.out.println(k + " " + a + " " + qc);
 		System.out.println(c * a >= 1/(Math.pow(beta, k-1)) * qc);
 		System.out.println(c * a + " " + 1/(Math.pow(beta, k-1)) * qc);
+		System.out.println((max-1) * (1 - Math.pow(beta, k) + Math.pow(beta, k + 1)) / (1-beta)  + Math.pow(beta, k) * max);
 	}
 	
 	public boolean testAndWriteResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
@@ -74,7 +94,7 @@ public class TestAlg2k {
 			int k = Service.generateKAlg2k(beta);
 			double c = 1/(Math.pow(beta, k-1)) *  max(1/Math.pow(beta,k-1), 
 					1/(1 - Math.pow(beta, 2*k)), 1 + (Math.pow(beta, 3*k) / (1 - Math.pow(beta, k))));
-			fw.write(beta + ";" + k + ";" + c + "\n;");
+			fw.write(beta + ";" + k + ";" + c + ";\n");
 			while(it.hasNext()) {
 				LinkedList<Job> input = it.next();
 				Alg2k alg = new Alg2k(k, beta, Service.cloneList(input));
@@ -97,10 +117,11 @@ public class TestAlg2k {
 	
 	public void startTesting() throws IOException {
 		int n = 1000;
-		int jobNumber = 1000;
+		int jobNumber = 100;
+		int lengthFactor = 4;
 		LinkedList<LinkedList<Job>> inputList = new LinkedList<LinkedList<Job>>();
 		for(int i = 0; i < n; i++)
-			inputList.add(Service.generateRandomInput(jobNumber, 4));
+			inputList.add(Service.generateRandomInput(lengthFactor, jobNumber));
 		if(!testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG2k0and0_3.csv"))
 			System.out.println(false);
 		if(!testAndWriteResults(inputList, getBetaGenerator(0.3, 0.6), "ALG2k0_3and0_6.csv"))
