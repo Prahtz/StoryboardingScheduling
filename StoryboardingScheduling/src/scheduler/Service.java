@@ -80,7 +80,6 @@ public class Service {
 		return beta;
 	}
 
-
 }
 
 

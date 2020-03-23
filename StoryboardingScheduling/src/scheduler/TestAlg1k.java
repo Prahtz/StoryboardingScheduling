@@ -74,12 +74,19 @@ public class TestAlg1k {
 		LinkedList<LinkedList<Job>> inputList = new LinkedList<LinkedList<Job>>();
 		for(int i = 0; i < n; i++)
 			inputList.add(Service.generateRandomInput(lengthFactor, jobNumber));
-		testAndWriteResults(inputList, getBetaGenerator(0, (double)2/3), "ALG1kSmallBetas.csv");
-		testAndWriteResults(inputList, getBetaGenerator((double)2/3, 1), "ALG1kBigBetas.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG1k0and0_3.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0.3, 0.6), "ALG1k0_3and0_6.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0.6, 0.8), "ALG1k0_6and0_8.csv");
-		testAndWriteResults(inputList, getBetaGenerator(0.8, 1), "ALG1k0_8and1.csv");
+		
+		if(!testAndWriteResults(inputList, getBetaGenerator(0, (double)2/3), "ALG1kSmallBetas.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator((double)2/3, 1), "ALG1kBigBetas.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG1k0and0_3.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0.3, 0.6), "ALG1k0_3and0_6.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0.6, 0.8), "ALG1k0_6and0_8.csv"))
+			System.out.println(false);
+		if(!testAndWriteResults(inputList, getBetaGenerator(0.8, 1), "ALG1k0_8and1.csv"))
+			System.out.println(false);
 	}
 	
 

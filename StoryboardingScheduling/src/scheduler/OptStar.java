@@ -3,16 +3,16 @@ package scheduler;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class QuantizedOptStar {
+public class OptStar {
 	private double beta;
 	private int k;
 	private int m;
 	private LinkedList<Job> totalJobs;
 	private LinkedList<Job> activeJobs;
 	
-	public QuantizedOptStar(int k, int m, double beta, LinkedList<Job> totalJobs) {
+	public OptStar(int k, int m, double beta, LinkedList<Job> totalJobs) {
 		this.k = k;
-		this.m = m;
+		this.m = 2*m;
 		this.beta = beta;
 		this.totalJobs = totalJobs;
 		this.activeJobs = new LinkedList<Job>();
@@ -20,20 +20,17 @@ public class QuantizedOptStar {
 	
 	public double start() {
 		int t = 0;
-		m = 2 * m;
 		double expectedValue = 0;
 		quantizeTotalJobs();
 		while(!totalJobs.isEmpty() || !activeJobs.isEmpty()) {
 			scheduleActiveJobs(t);
 			sortActiveJobs();
-			Job[] machines = new Job[m];		
-			for(int i = 0; i < m && !activeJobs.isEmpty(); i++) 	
-				machines[i] = activeJobs.poll();
-			for(int i = 0; i < machines.length; i++) {
-				expectedValue = expectedValue + Math.pow(beta, t) * machines[i].getValue();
-				machines[i].setLength(machines[i].getLength() - 1);
-				if(machines[i].getLength() != 0)
-					activeJobs.add(machines[i]);
+			for(int i = 0; i < m && !activeJobs.isEmpty(); i++) {
+				Job j = activeJobs.poll();
+				expectedValue = expectedValue + Math.pow(beta, t) * j.getValue();
+				j.setLength(j.getLength() - 1);
+				if(j.getLength() != 0)
+					totalJobs.add(j);
 			}
 			t++;
 		}

@@ -1,13 +1,5 @@
 package scheduler;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import org.knowm.xchart.QuickChart;
-import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.XYChart;
 
 public class Main {
 
@@ -29,15 +21,10 @@ public class Main {
 		//t2.testWorstCase();
 		//t2.startTesting();
 		cr.start();
-		/*
-	    double[] xData = new double[] { 0.0, 1.0, 2.0 };
-	    double[] yData = new double[] { 2.0, 1.0, 0.0 };
-	 
-	    // Create Chart
-	    XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
-	 
-	    // Show it
-	    new SwingWrapper(chart).displayChart();*/
+		//System.out.println(tm.testCompetitiveRatio());
+		//System.out.println(tm.testWorstCase());
+		//tm.startTesting();
+
 		
 	}
 }
