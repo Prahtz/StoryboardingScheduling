@@ -8,7 +8,7 @@ public class TestChop {
 		for(int i = 0 ; i < n; i++) {
 			double beta = Service.generateBeta();
 			int k = Service.generateKAlg1k(beta);
-			QuantizedChop chop = new QuantizedChop(k, beta, Service.generateRandomInput(k, jobNumber));
+			Chop chop = new Chop(k, beta, Service.generateRandomInput(k, jobNumber));
 			System.out.println(chop.start());
 		}
 	}

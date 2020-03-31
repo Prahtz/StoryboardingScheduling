@@ -3,12 +3,12 @@ package scheduler;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class QuantizedChop {
+public class Chop {
 	private int k;
 	private double beta;
 	private LinkedList<Job> totalJobs;
 	
-	public QuantizedChop(int k, double beta, LinkedList<Job> totalJobs) {
+	public Chop(int k, double beta, LinkedList<Job> totalJobs) {
 		this.k = k;
 		this.beta = beta;
 		this.totalJobs = totalJobs;

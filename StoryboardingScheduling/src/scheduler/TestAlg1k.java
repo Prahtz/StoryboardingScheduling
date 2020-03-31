@@ -27,7 +27,7 @@ public class TestAlg1k {
 			LinkedList<Job> input = new LinkedList<Job>();
 			input.add(new Job(0, 0, max, maxLength));
 			Alg1k alg = new Alg1k(k, beta, Service.cloneList(input));
-			QuantizedChop qc = new QuantizedChop(k, beta, input);
+			Chop qc = new Chop(k, beta, input);
 			
 			double algValue = alg.start();
 			double chopValue = qc.start();
@@ -61,7 +61,7 @@ public class TestAlg1k {
 			while(it.hasNext()) {
 				LinkedList<Job> input = it.next();
 				Alg1k alg = new Alg1k(k, beta, Service.cloneList(input));
-		 		QuantizedChop chop = new QuantizedChop(k, beta, Service.cloneList(input));
+		 		Chop chop = new Chop(k, beta, Service.cloneList(input));
 				double algValue = alg.start();
 				double chopValue = chop.start();
 				fw.write(algValue + ";" + chopValue + ";");
