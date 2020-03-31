@@ -8,34 +8,45 @@ import java.util.ListIterator;
 import java.util.Random;
 
 public class TestAlg1k {
-
-	public TestAlg1k() {
-		
-	}
 	
-	public boolean testCompetitiveRatio() {
-		int jobNumber = 10000;
-		int n = 10000;
-		double c = 4;
+	public TestAlg1k() {}
+	
+	public boolean testAndWriteWorstCaseResults(BetaGenerator bg, String fileName) throws IOException {
+		File f = new File("csv/" + fileName);
+		f.delete();
+		f.createNewFile();
+		FileWriter fw = new FileWriter(f);
+		int max = 100000;
+		int maxLength = 1000000;
+		int n = 1000;
 		for(int i = 0; i < n; i++) {
-			double beta = Service.generateBeta();
+			double beta = bg.generateBeta();
 			int k = Service.generateKAlg1k(beta);
-			c = 1/(Math.pow(beta, k-1) * (1 - Math.pow(beta,k)));
-			LinkedList<Job> totalJobs = Service.generateRandomInput(k, jobNumber);
-			Alg1k alg = new Alg1k(k, beta, Service.cloneList(totalJobs));
-			QuantizedChop chop = new QuantizedChop(k, beta, totalJobs);
-			if(c * alg.start() < (1/Math.pow(beta, k-1)) * chop.start())
+			double c = Math.floor(1/(Math.pow(beta, k-1) * (1 - Math.pow(beta,k))) * 1000000 + 1)/1000000;
+			fw.write(beta + ";" + k + ";" + c + ";\n");
+			LinkedList<Job> input = new LinkedList<Job>();
+			input.add(new Job(0, 0, max, maxLength));
+			Alg1k alg = new Alg1k(k, beta, Service.cloneList(input));
+			QuantizedChop qc = new QuantizedChop(k, beta, input);
+			
+			double algValue = alg.start();
+			double chopValue = qc.start();
+			fw.write(algValue + ";" + chopValue + ";");
+		
+			if(c*algValue  < (1/Math.pow(beta, k-1)) * chopValue) {
+				System.out.println(c * algValue + " " + (1/Math.pow(beta, k-1)) * chopValue);
+				fw.flush();
+				fw.close();
 				return false;
+			}
+			fw.write("\n");
 		}
+		fw.flush();
+		fw.close();
 		return true;
 	}
 	
-	public boolean testWorstCase() {
-		
-		return false;
-	}
-	
-	public boolean testAndWriteResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
+	public boolean testAndWriteMaximumResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
 		File f = new File("csv/" + fileName);
 		f.delete();
 		f.createNewFile();
@@ -67,6 +78,17 @@ public class TestAlg1k {
 		return true;
 	}
 	
+	public void startWorstCaseTesting() throws IOException {
+		if(!testAndWriteWorstCaseResults(getBetaGenerator(0,0.3), "ALG1k0and0_3Worst.csv")) 
+			System.out.println(false);
+		if(!testAndWriteWorstCaseResults(getBetaGenerator(0.3,0.6), "ALG1k0_3and0_6Worst.csv")) 
+			System.out.println(false);
+		if(!testAndWriteWorstCaseResults(getBetaGenerator(0.6,0.8), "ALG1k0_6and0_8Worst.csv")) 
+			System.out.println(false);
+		if(!testAndWriteWorstCaseResults(getBetaGenerator(0.8, 1), "ALG1k0_8and1Worst.csv")) 
+			System.out.println(false);
+	}
+	
 	public void startTesting() throws IOException {
 		int n = 1000;
 		int jobNumber = 100;
@@ -75,17 +97,17 @@ public class TestAlg1k {
 		for(int i = 0; i < n; i++)
 			inputList.add(Service.generateRandomInput(lengthFactor, jobNumber));
 		
-		if(!testAndWriteResults(inputList, getBetaGenerator(0, (double)2/3), "ALG1kSmallBetas.csv"))
+		if(!testAndWriteMaximumResults(inputList, getBetaGenerator(0, (double)2/3), "ALG1kSmallBetas.csv"))
 			System.out.println(false);
-		if(!testAndWriteResults(inputList, getBetaGenerator((double)2/3, 1), "ALG1kBigBetas.csv"))
+		if(!testAndWriteMaximumResults(inputList, getBetaGenerator((double)2/3, 1), "ALG1kBigBetas.csv"))
 			System.out.println(false);
-		if(!testAndWriteResults(inputList, getBetaGenerator(0, 0.3), "ALG1k0and0_3.csv"))
+		if(!testAndWriteMaximumResults(inputList, getBetaGenerator(0, 0.3), "ALG1k0and0_3.csv"))
 			System.out.println(false);
-		if(!testAndWriteResults(inputList, getBetaGenerator(0.3, 0.6), "ALG1k0_3and0_6.csv"))
+		if(!testAndWriteMaximumResults(inputList, getBetaGenerator(0.3, 0.6), "ALG1k0_3and0_6.csv"))
 			System.out.println(false);
-		if(!testAndWriteResults(inputList, getBetaGenerator(0.6, 0.8), "ALG1k0_6and0_8.csv"))
+		if(!testAndWriteMaximumResults(inputList, getBetaGenerator(0.6, 0.8), "ALG1k0_6and0_8.csv"))
 			System.out.println(false);
-		if(!testAndWriteResults(inputList, getBetaGenerator(0.8, 1), "ALG1k0_8and1.csv"))
+		if(!testAndWriteMaximumResults(inputList, getBetaGenerator(0.8, 1), "ALG1k0_8and1.csv"))
 			System.out.println(false);
 	}
 	

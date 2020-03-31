@@ -20,11 +20,14 @@ public class Main {
 		//t1.startTesting();
 		//t2.testWorstCase();
 		//t2.startTesting();
-		cr.start();
+		//t1.startWorstCaseTesting();
+		//t2.startWorstCaseTesting();
+		//cr.start();
 		//System.out.println(tm.testCompetitiveRatio());
 		//System.out.println(tm.testWorstCase());
 		//tm.startTesting();
-
-		
+		//t2.startWorstCaseTesting();
+		//tm.startWorstCaseTesting();
+		cr.start();
 	}
 }

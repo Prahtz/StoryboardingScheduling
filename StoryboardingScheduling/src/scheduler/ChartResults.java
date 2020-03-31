@@ -19,6 +19,11 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.markers.Marker;
+import org.knowm.xchart.style.markers.Rectangle;
 
 public class ChartResults {
 	public void start() throws IOException {
@@ -32,9 +37,20 @@ public class ChartResults {
 			String fileName = it.next();
 			LinkedList<Results> resultsList = getResultsList(fileName);
 			double[] xData = getArrayOfBetas(resultsList);
-		    double[] yData = getArrayOfMaximumRatios(resultsList);
-		    XYChart chart = QuickChart.getChart(fileName, "Betas", "Differences", "y(x)", xData, yData);
-		    BitmapEncoder.saveBitmap(chart, "png/" + fileName, BitmapFormat.PNG);
+		    fileName = fileName.substring(0, fileName.length() - 4);
+		    
+		    XYChart chart = new XYChartBuilder().width(800).height(600).title(fileName).xAxisTitle("Betas").yAxisTitle("Ratios").build();
+		    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+		    chart.getStyler().setMarkerSize(0);
+		    chart.addSeries("Maximum Ratios", xData, getArrayOfMaximumRatios(resultsList));
+		    chart.addSeries("Competitive Ratios", xData, getArrayOfCompetitiveRatios(resultsList));
+		    BitmapEncoder.saveBitmap(chart, "png/max/" + fileName, BitmapFormat.PNG);
+		    
+		    chart = new XYChartBuilder().width(800).height(600).title(fileName).xAxisTitle("Betas").yAxisTitle("Ratios").build();
+		    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+		    chart.getStyler().setMarkerSize(0);
+		    chart.addSeries("Average Ratios", xData, getArrayOfAverageRatios(resultsList));
+		    BitmapEncoder.saveBitmap(chart, "png/avg/" + fileName, BitmapFormat.PNG);
 		}
 	}
 	
@@ -60,7 +76,6 @@ public class ChartResults {
 				results.addOnlineValue(Double.parseDouble(next));
 				results.addOfflineValue(Double.parseDouble(scanner.next()));
 				next = scanner.next();
-				//System.out.println(next);
 			}
 			addResults(resultsList, results);
 		}
@@ -116,7 +131,6 @@ public class ChartResults {
 					minimumValue = ratio;
 			}
 			minimumRatios[i] = minimumValue;
-			//System.out.println(minimumValue);
 			i++;
 		}
 		return minimumRatios;
@@ -135,15 +149,46 @@ public class ChartResults {
 			double c = next.getC();
 			double maximumValue = 0;
 			for(int j = 0; j < onlineValues.size(); j++) {
-				double ratio = c * onlineValues.get(j) / ((1/Math.pow(beta, k-1)) * offlineValues.get(j));
+				double ratio = ((1/Math.pow(beta, k-1)) * offlineValues.get(j)) / onlineValues.get(j);
 				if(ratio > maximumValue)
 					maximumValue = ratio;
 			}
 			maximumRatios[i] = maximumValue;
-			//System.out.println(minimumValue);
 			i++;
 		}
 		return maximumRatios;
 	}
-
+	
+	private double[] getArrayOfAverageRatios(LinkedList<Results> resultsList) {
+		double[] averageRatios = new double[resultsList.size()];
+		Iterator<Results> it = resultsList.iterator();
+		int i = 0;
+		while(it.hasNext()) {
+			Results next = it.next();
+			ArrayList<Double> onlineValues = next.getOnlineValues();
+			ArrayList<Double> offlineValues = next.getOfflineValues();
+			double beta = next.getBeta();
+			int k = next.getK();
+			double c = next.getC();
+			double averageValue = 0;
+			for(int j = 0; j < onlineValues.size(); j++) 
+				//averageValue = averageValue + c * onlineValues.get(j) / ((1/Math.pow(beta, k-1)) * offlineValues.get(j));
+				averageValue = averageValue + (((1/Math.pow(beta, k-1)) * offlineValues.get(j)) / onlineValues.get(j));
+			averageRatios[i] = averageValue / onlineValues.size();
+			i++;
+		}
+		return averageRatios;
+	}
+	
+	private double[] getArrayOfCompetitiveRatios(LinkedList<Results> resultsList) {
+		double[] cRatios = new double[resultsList.size()];
+		Iterator<Results> it = resultsList.iterator();
+		int i = 0;
+		while(it.hasNext()) {
+			cRatios[i] = it.next().getC();
+			i++;
+		}
+		return cRatios;
+	}
+	
 }
