@@ -12,7 +12,7 @@ public class TestAlg1k {
 	public TestAlg1k() {}
 	
 	public boolean testAndWriteWorstCaseResults(BetaGenerator bg, String fileName) throws IOException {
-		File f = new File("csv/" + fileName);
+		File f = new File("csv/worst/" + fileName);
 		f.delete();
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
@@ -47,7 +47,7 @@ public class TestAlg1k {
 	}
 	
 	public boolean testAndWriteMaximumResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
-		File f = new File("csv/" + fileName);
+		File f = new File("csv/max/" + fileName);
 		f.delete();
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
@@ -109,6 +109,54 @@ public class TestAlg1k {
 			System.out.println(false);
 		if(!testAndWriteMaximumResults(inputList, getBetaGenerator(0.8, 1), "ALG1k0_8and1.csv"))
 			System.out.println(false);
+	}
+	
+	public void startTesting2() throws IOException {
+		int n = 1;
+		int jobNumber = 100;
+		int lengthFactor = 4;
+		LinkedList<LinkedList<Job>> inputList = new LinkedList<LinkedList<Job>>();
+		for(int i = 0; i < n; i++) {
+			LinkedList<Job> in = new LinkedList<Job>();
+			in.add(new Job(0,1,1000,1000000));
+			inputList.add(in);
+			//inputList.add(Service.generateRandomInput(lengthFactor, jobNumber));
+		}
+		
+		if(!testAndWriteMaximumResults2(inputList, getBetaGenerator(0, 1), "ALG1kTest.csv"))
+			System.out.println(false);
+	}
+	
+	public boolean testAndWriteMaximumResults2(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
+		File f = new File("csv/" + fileName);
+		f.delete();
+		f.createNewFile();
+		FileWriter fw = new FileWriter(f);
+		int n = 1000;
+		for(int i = 0; i < n; i++) {
+			ListIterator<LinkedList<Job>> it = inputList.listIterator();
+			double beta = bg.generateBeta();
+			int k = Service.generateKAlg1k(beta);
+			double c = Math.floor(1/(Math.pow(beta, k-1) * (1 - Math.pow(beta,k))) * 1000000 + 1)/1000000;
+			fw.write(beta + ";" + k + ";" + c + ";\n");
+			while(it.hasNext()) {
+				LinkedList<Job> input = it.next();
+				Alg1k alg = new Alg1k(k, beta, Service.cloneList(input));
+		 		Chop chop = new Chop(k, beta, Service.cloneList(input));
+				double algValue = alg.start();
+				double chopValue = chop.start();
+				fw.write(algValue + ";" + chopValue + ";");
+				if(c * algValue < chopValue) {
+					fw.flush();
+					fw.close();
+					return false;
+				}
+			}
+			fw.write("\n");
+		}
+		fw.flush();
+		fw.close();
+		return true;
 	}
 	
 

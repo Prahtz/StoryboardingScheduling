@@ -9,32 +9,8 @@ import java.util.Random;
 
 public class TestAlgmk {
 	
-	public void test() {
-		double beta = 0.3;
-		int max = 100;
-		int maxLength = 10000;
-		int m = 10;
-		int k = Service.generateKAlg1k(beta);
-		double c = (1/(Math.pow(beta, k-1)) * (1 + 1/(1 - Math.pow(beta,k))));
-		LinkedList<Job> input = new LinkedList<Job>();
-		for(int j = 0; j < 2*m; j++) 
-			input.add(new Job(j, 0, max, maxLength));
-		Algmk alg = new Algmk(k, m, beta, Service.cloneList(input));
-		OptStar op = new OptStar(k, m, beta, input);
-		
-		double algValue = alg.start();
-		double opValue = op.start();
-		double mathAlg = max * m + beta * max * m;
-		double mathOp = max * 2 * m + max * 2 * m *(beta/(1-beta));
-		
-		System.out.println(beta);
-		System.out.println(algValue + " " + mathAlg);
-		System.out.println(opValue + " " + mathOp);
-		System.out.println(1/(Math.pow(beta, k-1)) * opValue / algValue);
-	}
-	
 	public boolean testAndWriteWorstCaseResults(BetaGenerator bg, String fileName) throws IOException {
-		File f = new File("csv/" + fileName);
+		File f = new File("csv/worst/" + fileName);
 		f.delete();
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
@@ -71,7 +47,7 @@ public class TestAlgmk {
 	}
 	
 	public boolean testAndWriteMaximumResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
-		File f = new File("csv/" + fileName);
+		File f = new File("csv/max/" + fileName);
 		f.delete();
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
@@ -110,7 +86,7 @@ public class TestAlgmk {
 			System.out.println(false);
 		if(!testAndWriteWorstCaseResults(getBetaGenerator(0.6,0.8), "ALGmk0_6and0_8m10Worst.csv")) 
 			System.out.println(false);
-		if(!testAndWriteWorstCaseResults(getBetaGenerator(0.8, 1), "ALGmk0_8and1m10Worst.csv")) 
+		if(!testAndWriteWorstCaseResults(getBetaGenerator(0.8, 0.99), "ALGmk0_8and1m10Worst.csv")) 
 			System.out.println(false);
 	}
 	
@@ -131,6 +107,7 @@ public class TestAlgmk {
 			System.out.println(false);
 	}
 	
+	
 	private BetaGenerator getBetaGenerator(double a, double b) {
 		BetaGenerator bg = () -> {
 			Random random = new Random();
@@ -142,5 +119,4 @@ public class TestAlgmk {
 		};
 		return bg;
 	}
-
 }

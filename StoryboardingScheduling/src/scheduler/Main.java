@@ -28,6 +28,10 @@ public class Main {
 		//tm.startTesting();
 		//t2.startWorstCaseTesting();
 		//tm.startWorstCaseTesting();
+		//t1.startTesting2();
+		t2.startWorstCaseTesting();
+		//tm.startWorstCaseTesting();
 		cr.start();
+		//cr.chartCR();
 	}
 }

@@ -26,18 +26,52 @@ import org.knowm.xchart.style.markers.Marker;
 import org.knowm.xchart.style.markers.Rectangle;
 
 public class ChartResults {
+	
+	public void chartCR() throws IOException {
+		double beta = 0.001;
+		int n = 1000;
+		double betas[] = new double[n];
+		double x0[]= new double[n];
+		double x1[] = new double[n];
+		double x2[] = new double[n];
+		int i = 0;
+		while(beta < 1) {
+			int k= Service.generateKAlg2k(beta);
+			betas[i] = beta;
+			x0[i] = 1/Math.pow(beta,k-1);
+			x1[i] = 1/(1 - Math.pow(beta, 2*k));
+			x2[i] = 1 + (Math.pow(beta, 3*k) / (1 - Math.pow(beta, k)));
+
+			i++;
+			beta = beta + 0.001;
+		}
+		XYChart chart = new XYChartBuilder().width(800).height(600).title("CR").xAxisTitle("Betas").yAxisTitle("Ratios").build();
+	    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+	    chart.getStyler().setMarkerSize(0);
+	    //chart.addSeries("1", betas, x0);
+	    //chart.addSeries("2", betas, x1);
+	    chart.addSeries("3", betas, x2);
+	    BitmapEncoder.saveBitmap(chart, "chartCR", BitmapFormat.PNG);
+	}
+	private double max(double a, double b, double c) {
+		if(a >= b && a >= c)
+			return a;
+		else if(b >= a && b >= c)
+			return b;
+		return c;
+	}
 	public void start() throws IOException {
-		Stream<Path> walk = Files.walk(Paths.get("csv"));
-		List<String> files = walk.filter(Files::isRegularFile)
+		Stream<Path> maxWalk = Files.walk(Paths.get("csv/max"));
+		List<String> files = maxWalk.filter(Files::isRegularFile)
 				.map(x ->(x.toString().substring(4))).collect(Collectors.toList());
-		walk.close();
+		maxWalk.close();
 		
 		Iterator<String> it = files.iterator();
 		while(it.hasNext()) {
 			String fileName = it.next();
 			LinkedList<Results> resultsList = getResultsList(fileName);
 			double[] xData = getArrayOfBetas(resultsList);
-		    fileName = fileName.substring(0, fileName.length() - 4);
+		    fileName = fileName.substring(4, fileName.length() - 4);
 		    
 		    XYChart chart = new XYChartBuilder().width(800).height(600).title(fileName).xAxisTitle("Betas").yAxisTitle("Ratios").build();
 		    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
@@ -45,15 +79,30 @@ public class ChartResults {
 		    chart.addSeries("Maximum Ratios", xData, getArrayOfMaximumRatios(resultsList));
 		    chart.addSeries("Competitive Ratios", xData, getArrayOfCompetitiveRatios(resultsList));
 		    BitmapEncoder.saveBitmap(chart, "png/max/" + fileName, BitmapFormat.PNG);
+		}
+		
+		Stream<Path> worstWalk = Files.walk(Paths.get("csv/worst"));
+		files = worstWalk.filter(Files::isRegularFile)
+				.map(x ->(x.toString().substring(4))).collect(Collectors.toList());
+		worstWalk.close();
+		
+		it = files.iterator();
+		while(it.hasNext()) {
+			String fileName = it.next();
+			LinkedList<Results> resultsList = getResultsList(fileName);
+			double[] xData = getArrayOfBetas(resultsList);
+		    fileName = fileName.substring(6, fileName.length() - 4);
 		    
-		    chart = new XYChartBuilder().width(800).height(600).title(fileName).xAxisTitle("Betas").yAxisTitle("Ratios").build();
+		    XYChart chart = new XYChartBuilder().width(800).height(600).title(fileName).xAxisTitle("Betas").yAxisTitle("Ratios").build();
 		    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
 		    chart.getStyler().setMarkerSize(0);
-		    chart.addSeries("Average Ratios", xData, getArrayOfAverageRatios(resultsList));
-		    BitmapEncoder.saveBitmap(chart, "png/avg/" + fileName, BitmapFormat.PNG);
+		    chart.addSeries("Worst Ratios", xData, getArrayOfMaximumRatios(resultsList));
+		    chart.addSeries("Competitive Ratios", xData, getArrayOfCompetitiveRatios(resultsList));
+		    BitmapEncoder.saveBitmap(chart, "png/worst/" + fileName, BitmapFormat.PNG);
 		}
 	}
-	
+
+
 	private LinkedList<Results> getResultsList(String fileName) throws FileNotFoundException {
 		Scanner scanner = new Scanner(new File("csv/" + fileName));
 		scanner.useDelimiter(";|\n");
@@ -113,29 +162,6 @@ public class ChartResults {
 		return betas;
 	}
 	
-	private double[] getArrayOfMinumumRatios(LinkedList<Results> resultsList) {
-		double[] minimumRatios = new double[resultsList.size()];
-		Iterator<Results> it = resultsList.iterator();
-		int i = 0;
-		while(it.hasNext()) {
-			Results next = it.next();
-			ArrayList<Double> onlineValues = next.getOnlineValues();
-			ArrayList<Double> offlineValues = next.getOfflineValues();
-			double beta = next.getBeta();
-			int k = next.getK();
-			double c = next.getC();
-			double minimumValue = Double.MAX_VALUE;
-			for(int j = 0; j < onlineValues.size(); j++) {
-				double ratio = c * onlineValues.get(j) / ((1/Math.pow(beta, k-1)) * offlineValues.get(j));
-				if(ratio < minimumValue)
-					minimumValue = ratio;
-			}
-			minimumRatios[i] = minimumValue;
-			i++;
-		}
-		return minimumRatios;
-	}
-	
 	private double[] getArrayOfMaximumRatios(LinkedList<Results> resultsList) {
 		double[] maximumRatios = new double[resultsList.size()];
 		Iterator<Results> it = resultsList.iterator();
@@ -146,7 +172,6 @@ public class ChartResults {
 			ArrayList<Double> offlineValues = next.getOfflineValues();
 			double beta = next.getBeta();
 			int k = next.getK();
-			double c = next.getC();
 			double maximumValue = 0;
 			for(int j = 0; j < onlineValues.size(); j++) {
 				double ratio = ((1/Math.pow(beta, k-1)) * offlineValues.get(j)) / onlineValues.get(j);
@@ -169,10 +194,8 @@ public class ChartResults {
 			ArrayList<Double> offlineValues = next.getOfflineValues();
 			double beta = next.getBeta();
 			int k = next.getK();
-			double c = next.getC();
 			double averageValue = 0;
 			for(int j = 0; j < onlineValues.size(); j++) 
-				//averageValue = averageValue + c * onlineValues.get(j) / ((1/Math.pow(beta, k-1)) * offlineValues.get(j));
 				averageValue = averageValue + (((1/Math.pow(beta, k-1)) * offlineValues.get(j)) / onlineValues.get(j));
 			averageRatios[i] = averageValue / onlineValues.size();
 			i++;

@@ -11,11 +11,11 @@ public class TestAlg2k {
 	public TestAlg2k() {}	
 	
 	public boolean testAndWriteWorstCaseResults(BetaGenerator bg, String fileName) throws IOException {
-		File f = new File("csv/" + fileName);
+		File f = new File("csv/worst/" + fileName);
 		f.delete();
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
-		int max = 100000;
+		int b = 100000;
 		int maxLength = 1000000;
 		int n = 1000;
 		for(int i = 0; i < n; i++) {
@@ -26,12 +26,13 @@ public class TestAlg2k {
 			fw.write(beta + ";" + k + ";" + c + ";\n");
 			LinkedList<Job> input = new LinkedList<Job>();
 			if(k > 1) {
-				input.add(new Job(0, 0, max - 1, maxLength));
-				input.add(new Job(1, k, max, k - 1));
+				int a = getLowerValue(beta, k, b);
+				input.add(new Job(0, 0, a, maxLength));
+				input.add(new Job(1, k, b, 1));
 			}
 			else {
-				input.add(new Job(0, 0, max - 1, maxLength));
-				input.add(new Job(1, k, max, 1));
+				input.add(new Job(0, 0, b - 1, maxLength));
+				input.add(new Job(1, k, b, 1));
 			}
 			Alg2k alg = new Alg2k(k, beta, Service.cloneList(input));
 			Chop qc = new Chop(k, beta, input);
@@ -39,11 +40,12 @@ public class TestAlg2k {
 			double algValue = alg.start();
 			double chopValue = qc.start();
 			fw.write(algValue + ";" + chopValue + ";");
+			/*
 			if(c * algValue < (1/Math.pow(beta, k-1)) * chopValue) {
 				fw.flush();
 				fw.close();
 				return false;
-			}
+			}*/
 			fw.write("\n");
 		}
 		fw.flush();
@@ -52,7 +54,7 @@ public class TestAlg2k {
 	}
 	
 	public boolean testAndWriteMaximumResults(LinkedList<LinkedList<Job>> inputList, BetaGenerator bg, String fileName) throws IOException {
-		File f = new File("csv/" + fileName);
+		File f = new File("csv/max/" + fileName);
 		f.delete();
 		f.createNewFile();
 		FileWriter fw = new FileWriter(f);
@@ -131,6 +133,14 @@ public class TestAlg2k {
 			return b;
 		return c;
 	}
+	
+	private int getLowerValue(double beta, int k, int m) {
+		if(Math.pow(beta,2*k) + Math.pow(beta,k-1) - 1 >= 0)
+			return m - 1;
+		return 0;
+	}
+	
+	
 
 	
 }

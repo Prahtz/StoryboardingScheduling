@@ -7,9 +7,12 @@
 \usepackage{graphicx}
 \usepackage{helvet}
 \usepackage{float}
+\usepackage{hyperref}
+\usepackage{verbatim}
 \graphicspath{ {./png/} }
 \geometry{margin=1in}
 \newcommand*{\N}{\mathbb{N}}
+\renewcommand{\thefigure}{\thesubsection.\arabic{figure}}
 \title{ \LARGE\textbf{New Online Algorithms for Story Scheduling in Web Advertising}}
 \date{}
 \begin{document}
@@ -27,7 +30,7 @@ Dato uno schedule $S$, il suo valore è definito come il valore atteso $\sum_{t=
 
 \section{Lavori precedenti}
 Secondo quanto pubblicato da Susanne Albers e Achim Passen [1], lo storyboarding è stato studiato, da un punto di vista algoritmico, solamente da Dasgupta et al. [3]. Una prima osservazione è che se $\beta  = 1$ allora il problema è semplice da risolvere in quanto il valore dello schedule non dipende dal tempo in cui vengono eseguiti i vari job. Quindi ci si concentra sul caso in cui $0 < \beta < 1$.
-Dasgupta et al. [1] hanno mostrato che nessun algoritmo deterministico online può avere un rapporto competitivo di $\beta + \beta^{2}$ che quindi è limitato superiormente da 2. Come risultato principale Dasgupta et al. hanno sviluppato un algoritmo greedy che è 7-competitivo. Inoltre hanno affrontato un’estensione del problema in cui i jobs hanno un valore per unità crescente anziché costante e in cui il valore è ottenuto solo quando il job è completamente finito. Infine hanno studiato un’altra estensione del problema in cui un job dev’essere schedulato immediatamente all’arrivo, altrimenti è perso.
+Dasgupta et al. [3] hanno mostrato che nessun algoritmo deterministico online può avere un rapporto competitivo di $\beta + \beta^{2}$ che quindi è limitato superiormente da 2. Come risultato principale Dasgupta et al. hanno sviluppato un algoritmo greedy che è 7-competitivo. Inoltre hanno affrontato un’estensione del problema in cui i jobs hanno un valore per unità crescente anziché costante e in cui il valore è ottenuto solo quando il job è completamente finito. Infine hanno studiato un’altra estensione del problema in cui un job dev’essere schedulato immediatamente all’arrivo, altrimenti è perso.
 
 \section{Contributi di questo documento}
 Come detto in precedenza, Albers e Passen, in una pubblicazione [1], hanno presentato tre nuovi algoritmi online per lo storyboarding. Tutte le strategie seguono il paradigma del processare una data sequenza di job $I$ in fasi, in cui una fase consiste in k intervalli di tempi consecutivi per qualche $k\in \N$. 
@@ -80,13 +83,14 @@ Similmente a quanto fatto in Sezione 4, introduciamo un teorema e un corollario 
 \textit{Per $k = \lceil log_{\beta} (2 - \sqrt{2})\rceil$, l'algoritmo risultante $ALG(m)_{k}$ ottiene un rapporto competitivo di $(1 + 1 / (1 - \beta (2 - \sqrt{2})) / (2 - \sqrt{2}).$}
 
 \section{Implementazioni}
-In questa sezione verranno mostrate e discusse delle possibili implementazioni  dei tre algoritmi precedentemente introdotti. Tali implementazioni sono state progettate al fine di poter ottenere il valore atteso di ciascun algoritmo, per poter verificare empiricamente i risultati ottenuti dalle analisi descritte sopra. Il linguaggio di programmazione utilizzato è Java. Inoltre sono state fatte le seguenti assunzioni: per ogni job $i$, $a_{i} \in \N$ mentre $v_{i}$ e $l_{i}$ sono interi positivi diversi da $0$. Le fasi sono numerate a partire da $0$. Per quanto riguarda $ALG(m)_{k}$, è stato assunto che $m$ sia un intero positivo maggiore o uguale a $1$. Inoltre ogni job è stato implementato attraverso la classe Job, contenente i seguenti campi:
+In questa sezione verranno mostrate e discusse delle possibili implementazioni  dei tre algoritmi precedentemente introdotti. Tali implementazioni sono state progettate al fine di poter ottenere il valore atteso di ciascun algoritmo, per poter verificare empiricamente i risultati ottenuti dalle analisi descritte sopra. Il linguaggio di programmazione utilizzato è Java. Inoltre sono state fatte le seguenti assunzioni: per ogni job $i$, $a_{i} \in \N$ mentre $v_{i}$ e $l_{i}$ sono interi positivi diversi da $0$. Per quanto riguarda $ALG(m)_{k}$, è stato assunto che $m$ sia un intero positivo maggiore o uguale a $1$. Inoltre ogni job è stato implementato attraverso la classe Job, contenente i seguenti campi:
 \begin{itemize}
 \item{int index, che rappresenta l’indice del job $i$;}
 \item{int arrivalTime, che rappresenta il suo tempo di arrivo $a_{i}$;}
 \item{int value, che rappresenta il suo valore unitario $v_{i}$;}
 \item{int length, che rappresenta la sua lunghezza $l_{i}$.}
 \end{itemize}
+Tutte le implementazioni proposte sono consultabili nella seguente repository di GitHub: \url{https://github.com/Prahtz/StoryboardingScheduling}
 
 \subsection{Implementazione di $ALG1_{k}$}
 L’algoritmo $ALG1_{k}$ è stato implementato attraverso la classe ALG1k. I suoi campi sono:
@@ -137,7 +141,7 @@ Il suo unico costruttore ha come parametri k, m, beta e totalJobs. Il metodo “
 \end{itemize}
 
 \subsection{Implementazione di $CHOP$}
-L’algoritmo $ALG2_{k}$ è stato implementato attraverso la classe ALG2k. I suoi campi sono:
+L’algoritmo $CHOP$ è stato implementato attraverso la classe CHOP. I suoi campi sono:
 \begin{itemize}
 \item{double beta, che rappresenta la probabilità $\beta$;}
 \item{int k, che rappresenta la lunghezza di ciascuna fase;}
@@ -165,13 +169,13 @@ Il suo unico costruttore ha come parametri k, m, beta e totalJobs e a differenza
 In questa sezione verranno mostrati i risultati ottenuti da alcune simulazioni effettuate sugli algoritmi precedentemente descritti. Lo scopo di tali simulazioni è quello di verificare empiricamente la validità dei teoremi dimostrati precedentemente. Ciascun algoritmo online è stato messo a confronto con un determinato algoritmo offline in base a determinate caratteristiche che verranno mostrate successivamente. La necessità di utilizzare tali algoritmi offline per il confronto nasce dall’impossibilità di determinare con certezza l’implementazione di un algoritmo offline ottimale per la risoluzione del problema dello storyboarding scheduling. Sono stati effettuati due tipi di simulazioni. La prima simulazione consiste nell'eseguire ciascun algoritmo su un input particolare in modo da massimizzare la perdita del valore ottenuto. La seconda invece consiste nel generare casualmente 1000 input composti da 100 job ed eseguire ciascun algoritmo su ogni singolo input. Ogni tipo di simulazione è stata divisa in quattro test. Ogni test rappresenta un particolare intervallo dei valori che $\beta$ può assumere, ovvero $0 < \beta < 1$. Gli intervalli scelti sono i seguenti:
 \begin{itemize}
 \item{$0 < \beta < 0.3$,}
-\item{$0.4 \leq \beta < 0.6$,}
+\item{$0.3 \leq \beta < 0.6$,}
 \item{$0.6 \leq \beta < 0.8$,}
 \item{$0.8 \leq \beta < 1$.}
 \end{itemize}
 Quindi, per ogni test, vengono generati 1000 valori di $\beta$ appartenenti al relativo intervallo e, per ogni $\beta$, viene calcolata la lunghezza ottimale delle fasi ($k$) e il rapporto competitivo $c$. A questo punto per ogni coppia $\beta$, $k$ si calcola il valore ottenuto dell'algoritmo online e di quello offline per gli/l'input precedentemente generati/o. Tutti i risultati ottenuti vengono scritti in un file strutturato, in modo tale da poter essere letti ed analizzati in un momento successivo. Per ogni input viene calcolato il rapporto tra il valore dell'algoritmo offline (moltiplicato per un determinato valore che verra mostrato in seguito) e il valore dell'algoritmo online. Il rapporto calcolato non deve superare il rapporto competitivo dell'algoritmo online relativo. Nel caso del secondo tipo di simulazione, una volta calcolato questo valore per tutti gli input, se ne ricava il massimo. 
 
-I risultati verranno mostrati tramite grafici bidimensionali in cui si associa ad ogni valore di $\beta$ (asse X) il rapporto o il massimo dei rapporti tra il valore dell'algoritmo online e di quello offline (asse Y). I grafici sono consultabili nell'appendice B.
+I risultati verranno mostrati tramite grafici bidimensionali in cui si associa ad ogni valore di $\beta$ (asse X) il rapporto o il massimo dei rapporti tra il valore dell'algoritmo online e di quello offline (asse Y). Le implementazioni delle simulazioni, definite dalle classi TestAlg1k, TestAlg2k e TestAlgmk, sono consultabili nella repository di GitHub presente in sezione 7.
 
 \subsection{Test effettuati su $ALG1_{k}$}
 Prima di mostrare i risultati ottenuti, occorre definire l’algoritmo offline utilizzato per il confronto. Tale algoritmo è $CHOP$, che è stato descritto in Appendice A.1 come l’algoritmo che permette di riprendere l’esecuzione dei job interrotti in un momento successivo. Per qualsiasi input, in qualsiasi istante $t$, $CHOP$ schedula un job che ha il più alto valore per unità tra i job non completati che sono arrivati entro il tempo $t$. Vale dunque $CHOP(I_{k}) \geq OPT(I_{k})$. Inoltre dimostriamo il seguente corollario del Teorema 1.
@@ -193,15 +197,45 @@ c \cdot ALG1_{k}(I) \geq OPT(I) \iff c \cdot ALG1_{k}(I) \geq \frac{1}{\beta^{k-
 
 Grazie al risultato di questo corollario è possibile confrontare $ALG1_{k}$ su input $I$ con $CHOP$ su input $I_{k}$ per poter verificare che il rapporto competitivo di $ALG1_{k}$ sia effettivamente quello dimostrato, cioè $\frac{1}{\beta^{k-1}(1 - \beta^{k})}$. Per ogni $\beta$ è stata calcolata la lunghezza di fase $k$ con la funzione descritta nel Corollario 1. Per ciascun input il rapporto è stato calcolato come $\frac{1}{\beta^{k-1}} \cdot CHOP(I_{k}) / ALG1_{k}(I)$. Ciascun rapporto è stato confrontato con il relativo rapporto competitivo teorico. Adesso verranno mostrati e commentati i risultati ottenuti. Si ricorda che i grafici sono consultabili nell'appendice B.
 \subsubsection{Test del rapporto massimo}
-Commentiamo i risultati ottenuti. Osservando la Figura B.1.5, che mostra i risultati complessivi di tutti i test, possiamo affermare che i dati confermano il Teorema 1, in quanto nessuno dei rapporti massimi calcolati supera il relativo rapporto competitivo teorico.
-Dal grafico della Figura B.1.1 notiamo che le due funzioni sono molto simili. Questo è dovuto al fatto che, in questo intervallo di $\beta$, la scelta della lunghezza di fase è $k=1$, per cui tutti i job disponibili per OPT ad un certo tempo t lo sono anche per $ALG1_{k}$. L'unico caso in cui il valore di $ALG1_{k}$ subisce una pertita si ha quando avviene il pre-abbandono di job.
+\begin{figure}[H]
+\caption{Test valore massimo $ALG1_{k}$: $0 < \beta < 0.3$}
+\centering
+\includegraphics[scale=0.4]{max/ALG1k0and0_3.png}
+\end{figure}
+Commentiamo i risultati ottenuti. Osservando la Figura 8.1.5, che mostra i risultati complessivi di tutti i test, possiamo affermare che i dati confermano il Teorema 1, in quanto nessuno dei rapporti massimi calcolati supera il relativo rapporto competitivo teorico.
+Dal grafico della Figura 8.1.1 notiamo che le due funzioni sono molto simili. Questo è dovuto al fatto che, in questo intervallo di $\beta$, la scelta della lunghezza di fase è $k=1$, per cui tutti i job disponibili per OPT ad un certo tempo t lo sono anche per $ALG1_{k}$. L'unico caso in cui il valore di $ALG1_{k}$ subisce una pertita si ha quando avviene il pre-abbandono di job.
+\begin{figure}[H]
+\caption{Test valore massimo $ALG1_{k}$: $0 \leq \beta < 0.6$}
+\centering
+\includegraphics[scale=0.4]{max/ALG1k0_3and0_6.png}
+\end{figure}
+Dalla Figura 8.1.2 si possono applicare all'intervallo $0.3 <= \beta < 0.5$ le stesse considerazioni del paragrafo precedente. Nel restante intervallo ($0.5 <= \beta < 0.6$) si osserva un picco in corrispondenza di $\beta = 0.5$. Questo è dovuto al cambio della lunghezza di fase $k$ che ricordiamo varia a seconda del valore di $\beta$ (Corollario 3). Considerando $k$ ottenuto come nel Corollario 3 e $0 <\beta < 1$ costante, notiamo che il rapporto competitivo cresce. Al contrario di quanto si potrebbe osservare nei grafici, le stesse considerazioni non si possono fare per il rapporto effettivo $OPT/ALG1_{k}$ in quanto tale rapporto potrebbe diminuire all'aumentare della lunghezza di fase per determinati input. Ad esempio, considerando $I$ costituito da un unico job $i = (0, v_{i},\infty)$, allora a parità di $\beta$, $ALG1_{k}(I) < ALG1_{k+1}(I)$ e di conseguenza $OPT/ALG1_{k}(I) > OPT/ALG1_{k+1}(I)$.
+\begin{figure}[H]
+\caption{Test valore massimo $ALG1_{k}$: $0.6 \leq \beta < 0.8$}
+\centering
+\includegraphics[scale=0.4]{max/ALG1k0_6and0_8.png}
+\end{figure}
+Dalle Figure 8.1.3 e 8.1.4 osserviamo, oltre alle variazioni improvvise descritte precedentemente, che i rapporti massimi tendono a decrescere tra un cambio di fase e il successivo. Questo tuttavia non è generalmente vero. Infatti, considerando l'input $I$ del paragrafo precedente e una lunghezza di fase $k = 2$, otteniamo $\frac{CHOP(I_{2})}{\beta \cdot ALG1_{2}(I)} = \frac{\sum_{t = 0}^{\infty}\beta^{t}v_{i}}{\beta \cdot \sum_{t = 0}^{2}\beta^{t} v_{i}} = \frac{1}{\beta(1 - \beta^{2})}$. Questa è una funzione che decresce fino $\beta = \sqrt{1/3} \approx 0.578$ e cresce successivamente.
 
-Dalle successive figure (da B.1.2 a B.1.4) notiamo un aumento improvviso dei rapporti delle funzioni in corrispondenza ad alcuni valori di $\beta$. Questo è dovuto al cambio della lunghezza della fase $k$. Complessivamente notiamo che, al crescere di $\beta$, i rapporti massimi calcolati tendono a diminuire fino al successivo cambio di lunghezza di fase.
+\begin{figure}[H]
+\caption{Test valore massimo $ALG1_{k}$: $0.8 \leq \beta < 1$}
+\centering
+\includegraphics[scale=0.4]{max/ALG1k0_8and1.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Risultati complessivi dei test valore massimo di $ALG1_{K}$}
+\centering
+\includegraphics[scale=0.4]{max/ALG1kTotal.png}
+\end{figure}
 
 \subsubsection{Test del caso peggiore}
-Descriviamo l'input $I$ utilizzato che rappresenta un caso pessimo. L'algoritmo offline utilizzato per il confronto viene eseguito su $I_{k}$, di conseguenza ciascun job disponibile al tempo $t$ per $CHOP$ lo è anche per $ALG1_{k}$. Per i primi $k$ istanti di tempo il valore ottenuto da $ALG1k_{k}$ è lo stesso di $CHOP$. Negli istanti di tempo successivi invece il valore di $ALG1_{k}$ può essere minore rispetto a quello ottenuto da $CHOP$ in quanto può avvenire il pre-abbandono di job. Di conseguenza, l'input peggiore consiste di un singolo job di lunghezza infinita con tempo di arrivo di $t = 0$. In questo modo, $ALG1_{k}$ pre-abbandona il job alla fine della prima fase e non ottiene più valore negli istanti successivi, al contrario di $CHOP$ che continua ad eseguire il job. Di seguito i risultati ottenuti.
-
-In ciascun grafico (da Figura B.1.6 - a B.1.10) notiamo che ciascun rapporto calcolato è uguale al rispettivo rapporto competitivo teorico. Possiamo quindi affermare che i dati confermano il Teorema 1.
+Descriviamo l'input $I$ utilizzato che rappresenta un caso pessimo. L'algoritmo offline utilizzato per il confronto viene eseguito su $I_{k}$, di conseguenza ciascun job disponibile al tempo $t$ per $CHOP$ lo è anche per $ALG1_{k}$. Per i primi $k$ istanti di tempo il valore ottenuto da $ALG1k_{k}$ è lo stesso di $CHOP$. Negli istanti di tempo successivi invece il valore di $ALG1_{k}$ può essere minore rispetto a quello ottenuto da $CHOP$ in quanto può avvenire il pre-abbandono di job. Di conseguenza, l'input peggiore consiste di un singolo job di lunghezza infinita con tempo di arrivo di $t = 0$. In questo modo, $ALG1_{k}$ pre-abbandona il job alla fine della prima fase e non ottiene più valore negli istanti successivi, al contrario di $CHOP$ che continua ad eseguire il job. Formalmente, dato $I$ costituito dall'unico job  $i = (0, v_{i},\infty)$, si ha che $\frac{CHOP(I_{k})}{\beta^{k-1} \cdot ALG1_{k}(I)} = \frac{\sum_{t = 0}^{\infty}\beta^{t}v_{i}}{\beta \cdot \sum_{t = 0}^{k-1}\beta^{t} v_{i}} = \frac{1}{\beta^{k-1}(1 - \beta^{k})}$ che corrisponde al rapporto competitivo del Teorema 1. Di seguito i risultati ottenuti.
+\begin{figure}[H]
+\caption{Risultati complessivi dei test caso peggiore di $ALG1_{K}$}
+\centering
+\includegraphics[scale=0.4]{worst/ALG1kTotalWorst.png}
+\end{figure}
+Dal grafico in Figura 8.1.6, che mostra i risultati complessivi di ogni singolo test, notiamo che ciascun rapporto calcolato è uguale al rispettivo rapporto competitivo teorico. Possiamo quindi affermare che i dati confermano il Teorema 1 e che l'input precedentemente descritto sia uno dei peggiori. In Appendice B sono consultabili i grafici di ogni singolo test.
 \subsection{Test effettuati su $ALG2_{k}$}
 Anche per $ALG2_{k}$, l’algoritmo offline utilizzato per il confronto è $CHOP$. Vale infatti il seguente corollario del Teorema 3.
 \newline\newline
@@ -222,16 +256,63 @@ c \cdot ALG2_{k}(I) \geq OPT(I) \iff c \cdot ALG2_{k}(I) \geq \frac{1}{\beta^{k-
 Grazie al risultato di questo corollario è possibile confrontare $ALG2_{k}$ su input $I$ con $CHOP$ su input $I_{k}$ per poter verificare che il rapporto competitivo di $ALG2_{k}$ sia effettivamente quello dimostrato. Per ogni $\beta$ è stata calcolata la lunghezza di fase $k$ con la funzione descritta nel Corollario 4. Per ciascun input il rapporto è stato calcolato come $\frac{1}{\beta^{k-1}} \cdot CHOP(I_{k}) / ALG2_{k}(I)$. Ciascun rapporto è stato confrontato con il relativo rapporto competitivo teorico. Adesso verranno mostrati e commentati i risultati ottenuti. Si ricorda che i grafici sono consultabili nell'appendice B.
 \subsubsection{Test del rapporto massimo}
 Commentiamo i risultati ottenuti. Osservando la Figura B.2.5, che mostra i risultati complessivi di tutti i test, possiamo affermare che i dati confermano il Teorema 3, in quanto nessuno dei rapporti massimi calcolati supera il relativo rapporto competitivo teorico.
-Dai grafici delle Figure B.2.1 e B.2.2 notiamo che le due funzioni sono molto simili. Questo è dovuto al fatto che, in questi intervalli di $\beta$, la scelta della lunghezza di fase è $k=1$, per cui tutti i job disponibili per OPT ad un certo tempo t lo sono anche per $ALG2_{k}$. L'unico caso in cui il valore di $ALG2_{k}$ subisce una pertita si ha quando avviene il pre-abbandono di un job, ovvero quando un job viene interrotto alla fine di una fase ma non viene ripristinato nella fase successiva.
 
-Dalle Figure B.2.3 e B.2.4 notiamo un aumento improvviso dei rapporti delle funzioni in corrispondenza ad alcuni valori di $\beta$. Questo è dovuto al cambio della lunghezza della fase $k$. Complessivamente notiamo che, al crescere di $\beta$, i rapporti massimi calcolati tendono a diminuire fino al successivo cambio di lunghezza di fase.
+\setcounter{figure}{0} 
+\renewcommand{\thefigure}{\thesubsection.\arabic{figure}}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG2_{k}$: $0 < \beta < 0.3$}
+\centering
+\includegraphics[scale=0.4]{max/ALG2k0and0_3.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG2_{k}$: $0.3 \leq  \beta < 0.6$}
+\centering
+\includegraphics[scale=0.4]{max/ALG2k0_3and0_6.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG2_{k}$: $0.6 \leq \beta < 0.8$}
+\centering
+\includegraphics[scale=0.4]{max/ALG2k0_6and0_8.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG2_{k}$: $0.8 \leq \beta < 1$}
+\centering
+\includegraphics[scale=0.4]{max/ALG2k0_8and1.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Risultati complessivi dei test valore massimo di $ALG2_{k}$}
+\centering
+\includegraphics[scale=0.4]{max/ALG2kTotal.png}
+\end{figure}
+Dai grafici delle Figure 8.2.1 e 8.2.2, che rappresentano i test degli intervalli $0<\beta <0.3$ e $0.3 \leq \beta < 0.6$ rispettivamente, notiamo che le due funzioni sono molto simili. Questo è dovuto al fatto che, in questi intervalli di $\beta$, la scelta della lunghezza di fase è $k=1$, per cui tutti i job disponibili per OPT ad un certo tempo t lo sono anche per $ALG2_{k}$. L'unico caso in cui il valore di $ALG2_{k}$ subisce una pertita si ha quando avviene il pre-abbandono di un job, ovvero quando un job viene interrotto alla fine di una fase ma non viene ripristinato nella fase successiva. Inoltre notiamo che al crescere di $\beta$ i rapporti massimi tendono a crescere. Tuttavia questo non è generalmente vero, infatti considerando un input $I$ costituito da un job $i = (0,1,\infty)$ e un job $j = (1,2,\infty)$ e considerando $k = 1$ otteniamo che $$CHOP(I_{k})/(\beta^{k-1}ALG2_{k}) = CHOP(I_{1})/ALG2_{1}$$ $$= (1 + 2\beta + \sum_{t = 2}^{\infty}\beta^{t}) / (1 + 2\beta) = (1 + 2\beta + \frac{\beta^{2} - \beta^{3}}{1 - \beta}) / (1 + 2\beta)$$
+$$= \frac{1 + \beta - \beta^{2} - \beta^{3}}{1 + 2\beta}$$ \newline
+che è una funzione che decresce al crescere di $\beta \in (0, 1)$.
 
-Dalle successive figure (da B.2.2 a B.2.4) notiamo un aumento improvviso dei rapporti delle funzioni in corrispondenza ad alcuni valori di $\beta$. Questo è dovuto al cambio della lunghezza della fase $k$. Complessivamente notiamo che, al crescere di $\beta$, i rapporti massimi calcolati tendono a diminuire fino al successivo cambio di lunghezza di fase.
+Dalle Figure 8.2.3 e 8.2.4 notiamo un aumento improvviso dei rapporti delle funzioni in corrispondenza ad alcuni valori di $\beta$ ad esempio per $\beta \approx 0.619$. Questo è dovuto al cambio della lunghezza della fase $k$ che varia a seconda di $\beta$ (Corollario 4). Inoltre si osserva un cambiamento del rapporto competitivo tra un cambio di fase e l'altro. Ciò è riconducibile al cambiamento del massimo della funzione $max \{1 / \beta^{k - 1}, 1 / (1 - \beta^{2k}), 1 + \beta^{3k} / (1 - \beta^{k})\}$. Complessivamente notiamo che, al crescere di $\beta$, i rapporti massimi calcolati tendono a diminuire fino al successivo cambio di lunghezza di fase. Questo non è generalmente vero, come vedremo successivamente alla sezione 8.2.2.
 
 \subsubsection{Test del caso peggiore}
-Descriviamo l'input $I$ utilizzato che rappresenta un caso pessimo. L'algoritmo offline utilizzato per il confronto viene eseguito su $I_{k}$, di conseguenza ciascun job disponibile al tempo $t$ per $CHOP$ lo è anche per $ALG2_{k}$. Per i primi $k$ istanti di tempo il valore ottenuto da $ALG1k_{k}$ è lo stesso di $CHOP$. Negli istanti di tempo successivi invece il valore di $ALG2_{k}$ può essere minore rispetto a quello ottenuto da $CHOP$ in quanto può avvenire la ripresa di un job precedentemente interrotto. In tal caso infatti è possibile che il job interrotto venga schedulato prima di un altro job con valore unitario maggiore. Di conseguenza, l'input peggiore consiste di due job, il primo di valore unitario massimo, con tempo di arrivo $t = k$ e di lunghezza $k - 1$, nel caso k > 1, oppure di lunghezza 1 altrimenti; il secondo di valore unitario minore del primo, di lunghezza infinita e con tempo di arrivo $t = 0$. In questo modo, $ALG2_{k}$ ripristina l'esecuzione del secondo job all'inizio della seconda fase per un solo istante di tempo e nei successivi schedula $k - 1$ unità del primo job. $CHOP$ invece schedule prima il job di valore unitario maggiore e poi l'altro, ottenendo più valore nella seconda fase. Inoltre, essendo il secondo job di lunghezza infinita, $CHOP$ continua l'esecuzione del secondo job, mentr $ALG2_{k}$ termina. Di seguito i risultati ottenuti.
+Descriviamo l'input $I$ utilizzato che rappresenta un caso pessimo. L'algoritmo offline utilizzato per il confronto viene eseguito su $I_{k}$, di conseguenza ciascun job disponibile al tempo $t$ per $CHOP$ lo è anche per $ALG2_{k}$. Per i primi $k$ istanti di tempo il valore ottenuto da $ALG2k_{k}$ è lo stesso di $CHOP$. Negli istanti di tempo successivi invece il valore di $ALG2_{k}$ può essere minore rispetto a quello ottenuto da $CHOP$ in quanto può avvenire la ripresa di un job precedentemente interrotto. In tal caso infatti è possibile che il job interrotto venga schedulato prima di un altro job con valore unitario maggiore. Di conseguenza, l'input peggiore consiste di due job, il primo di valore unitario b, con tempo di arrivo $t = k$ e di lunghezza $1$, cioè $i = (k, b, 1)$; il secondo di valore unitario minore del primo, di lunghezza infinita e con tempo di arrivo $t = 0$, cioè $j = (0, a, \infty)$. In questo modo, $ALG2_{k}$ ripristina l'esecuzione del secondo job all'inizio della seconda fase per $k - 1$ unità di tempo e nell'istante di tempo rimanente schedula un'unità del primo job. $CHOP$ invece schedule prima il job di valore unitario maggiore e poi l'altro, ottenendo più valore nella seconda fase. Inoltre, essendo il secondo job di lunghezza infinita, $CHOP$ continua l'esecuzione del secondo job, mentre $ALG2_{k}$ termina. Si può dimostrare che questo è uno degli input peggiori. Innanzi tutto dimostriamo che, per ogni $\beta \in (0,1)$ e per $k = -\frac{1}{2}log_{\beta}(c) + 1$ si ha che $1/(1 - \beta^{2k}) > 1 + \beta^{3k}/(1 - \beta^{k})$ e $1/\beta^{k-1} > 1 + \beta^{3k}/(1 - \beta^{k})$. Dimostriamo la prima, che è equivalente a questa disequazione: 
+$$2\beta^{3k} - \beta^{2k} - \beta^{5k} < 0.$$
+Sostituendo k con $-\frac{1}{2}log_{\beta}(c) + 1$ otteniamo 
+$$2c^{-\frac{3}{2}}\beta^{3} - c^{-1}\beta^{2} - c^{-\frac{5}{2}}\beta^{5} = \beta^{2}(-c^{-\frac{5}{2}}\beta^{3} +2c^{-\frac{3}{2}}\beta - c^{-1}) < 0$$
+e sapendo che $c=1 + (1 + \sqrt(5))/2$ le soluzioni sono $\beta \in (0,1)$. Dimostriamo adesso la seconda, che è equivalente a questa disequazione:
+$$1 - \beta^{k} - \beta^{k-1} + \beta^{2k -1} - \beta^{4k - 1} > 0.$$
+Sostituendo k con $-\frac{1}{2}log_{\beta}(c) + 1$ otteniamo 
+$$1 - c^{-\frac{1}{2}}\beta - c^{-\frac{1}{2}} + c^{-1}\beta - c^{-2}\beta^{3} = -c^{-2}\beta^{3} + (c^{-1} - c^{-\frac{1}{2}})\beta + 1 - c^{-\frac{1}{2}}) > 0$$
+e sapendo che $c=1 + (1 + \sqrt(5))/2$ le soluzioni sono $\beta \in (0,1)$. Con questo risultato, oltre a dimostrare che quando si sceglie k come sopra il rapporto competitivo, definito come $1/\beta^{k-1} \cdot max \{1 / \beta^{k - 1}, 1 / (1 - \beta^{2k}), 1 + \beta^{3k} / (1 - \beta^{k})\}$, può essere ridotto a $1/\beta^{k-1} \cdot max \{1 / \beta^{k - 1}, 1 / (1 - \beta^{2k})\}$, possiamo dimostrare che l'input  descritto precedentemente sia effettivamente uno dei peggiori. Calcoliamo il rapporto $$CHOP(I_{k}) / ALG2_{k}(I) = \frac{ \sum_{t = 0}^{k-1}\beta^{t}a + \beta^{k} b + \sum_{t=k+1}^{\infty}\beta^{t}b}{\sum_{t=0}^{2k-2}\beta^{t}a + \beta^{2k-1}b}$$ $$= \frac{a(1 - \beta^{k}) + b(\beta^{k} - \beta^{k+1}) + a\beta^{k+1}}{a(1 - \beta^{2k-1}) + b(\beta^{2k-1}-\beta^{2k})}.$$
+A questo punto, supponiamo che a = 0, ovvero che il job $j$ abbia valore unitario uguale a 0. Otteniamo così $$CHOP(I_{k}) / ALG2_{k}(I) = \frac{b(\beta^{k} - \beta^{k+1})}{b(\beta^{2k-1}-\beta^{2k})} = \frac{1}{\beta^{k-1}}$$ che corrisponde a una delle funzioni del rapporto competitivo. In questo caso, per le assunzioni fatte nella Sezione 7, scegliamo $a = 1$, per ottenere il rapporto più vicino a $1/\beta^{k-1}$ tra tutti i possibili valori di $a$.
 
-Dalla Figura B.2.10 possiamo affermare che i dati confermano il Teorema 3, in quanto nessuno dei rapporti calcolati supera il relativo rapporto competitivo teorico. Inoltre dalle Figura B.2.6, B.2.7 e B.2.8 si osserva che ciascun rapporto calcolato è uguale al rispettivo rapporto competitivo teorico per $beta$ compreso tra 0 e circa 0.6.
+Supponiamo adesso che $a = b$, ovvero che $i$ e $j$ abbiano lo stesso valore unitario. Otteniamo così $$CHOP(I_{k}) / ALG2_{k}(I) = \frac{b(1 - \beta^{k}) + b(\beta^{k} - \beta^{k+1}) + b\beta^{k+1}}{b(1 - \beta^{2k-1}) + b(\beta^{2k-1}-\beta^{2k})} = \frac{1}{1 - \beta^{2k}}$$ che corrisponde a una delle funzioni del rapporto competitivo. Tuttavia, con $a = b$ l'algoritmo $ALG2_{k}$ avrebbe un comportamento diverso rispetto a quello descritto sopra e produrrebbe un valore atteso diverso da quello aspettato. Per risolvere questo problema e non incidere troppo sul rapporto finale, impostiamo $a = b-1$. In questo modo si ottiene il rapporto più vicino a $1/(1 - \beta^{2k})$ tra tutti i possibili valori di $a$.
+
+Resta da dimostrare quale valore assegnare ad $a$ in corrispondenza di $\beta$, ovvero quando utilizzare il primo o il secondo input per ottenere il risultato peggiore. Dato $\beta$ e di conseguenza $k$, utilizzeremo $a=1$ se $1/b^{k-1} > 1/(1 - \beta^{2k}$, mentre $a = b-1$ altrimenti. In questo modo siamo sicuri di ottenere il rapporto più alto per ogni $\beta$.
+Di seguito i risultati ottenuti.
+\begin{figure}[H]
+\caption{Risultati complessivi dei test caso peggiore di $ALG2_{k}$}
+\centering
+\includegraphics[scale=0.4]{worst/ALG2kTotalWorst.png}
+\end{figure}
+
+Dalla Figura 8.2.6, che mostra i risultati di ogni singolo test, possiamo affermare che i dati confermano il Teorema 3, in quanto nessuno dei rapporti calcolati supera il relativo rapporto competitivo teorico. Inoltre notiamo che, come ci aspettavamo, le due curve sembrano coincidere. I grafici di ogni singolo test sono consultabili in Appendice B.
 
 \subsection{Test effettuati su $ALG(m)_{k}$}
 Prima di mostrare i risultati ottenuti, occorre definire l’algoritmo offline utilizzato per il confronto. Tale algoritmo è stato descritto in Appendice A.8 come l’algoritmo che genera uno schedule in cui è possibile interrompere e migrare fra macchine i job. Inoltre, rispetto ad $ALG(m)_{k}$, può elaborare fino a $2m$ job ad ogni istante $t$. Il valore ottenuto da questo algoritmo  per un generico input $I$ è chiamato $OPT^{*}(I)$. Dunque chiameremo l'algoritmo $OPT^{*}$. Per qualsiasi input, in qualsiasi istante $t$, $OPT^{*}$ schedula fino a $2m$ job che hanno il più alto valore per unità tra i job non completati che sono arrivati entro il tempo $t$. Vale dunque $OPT^{*}(I_{k}) \geq OPT(I_{k})$. Inoltre dimostriamo il seguente corollario del Teorema 4.
@@ -242,19 +323,71 @@ $c \cdot ALG(m)_{k}(I) \geq OPT(I) \iff c \cdot ALG(m)_{k}(I) \geq \frac{1}{\bet
 \newline \newline
 \textit{Dimostrazione} 
 I lemmi 11 e 12 implicano $(1 + 1 / (1 - \beta^{k}))ALG(m)_{k}(I_{k}) \geq OPT^{*}(I_{k}) \geq OPT (I_{k})$, per ogni input $I$. Poiché $ALG(m)_{k}(I) = ALG(m)_{k}(I_{k})$ e $1 / \beta^{k-1}OPT (I_{k}) \geq OPT (I)$ si ottiene. 
-$$OPT(I) \leq \frac{1}{\beta^{k-1}} OPT(I_{k}) \leq \frac{1}{\beta^{k-1}} OPT^{*}(I_{k}) \leq \frac{1}{\beta^{k-1}} (1 + \frac{1}{1 - \beta^{k}}) ALG2_{k}(I) = c \cdot ALG2_{k}(I)$$
+$$OPT(I) \leq \frac{1}{\beta^{k-1}} OPT(I_{k}) \leq \frac{1}{\beta^{k-1}} OPT^{*}(I_{k}) \leq \frac{1}{\beta^{k-1}} (1 + \frac{1}{1 - \beta^{k}}) ALG(m)_{k}(I) = c \cdot ALG(m)_{k}(I)$$
 e dunque possiamo affermare che
 \begin{equation}
 c \cdot ALG2_{k}(I) \geq OPT(I) \iff c \cdot ALG2_{k}(I) \geq \frac{1}{\beta^{k-1}} OPT^{*}(I_{k}) \tag*{$\square$}
 \end{equation}
 
-Grazie al risultato di questo corollario è possibile confrontare $ALG(m)_{k}$ su input $I$ con $OPT^{*}$ su input $I_{k}$ per poter verificare che il rapporto competitivo di $ALG(m)_{k}$ sia effettivamente quello dimostrato. Per ogni $\beta$ è stata calcolata la lunghezza di fase $k$ con la funzione descritta nel Corollario 5. Per ciascun input il rapporto è stato calcolato come $\frac{1}{\beta^{k-1}} \cdot OPT^{*}(I_{k}) / ALG(m)_{k}(I)$. Ciascun rapporto è stato confrontato con il relativo rapporto competitivo teorico. Infine è stato scelto $m=10$ arbitrariamente in quanto $m$ non influisce sulla competitività. Adesso verranno mostrati e commentati i risultati ottenuti. Si ricorda che i grafici sono consultabili nell'appendice B.
+Grazie al risultato di questo corollario è possibile confrontare $ALG(m)_{k}$ su input $I$ con $OPT^{*}$ su input $I_{k}$ per poter verificare che il rapporto competitivo di $ALG(m)_{k}$ sia effettivamente quello dimostrato. Per ogni $\beta$ è stata calcolata la lunghezza di fase $k$ con la funzione descritta nel Corollario 5. Per ciascun input il rapporto è stato calcolato come $\frac{1}{\beta^{k-1}} \cdot OPT^{*}(I_{k}) / ALG(m)_{k}(I)$. Ciascun rapporto è stato confrontato con il relativo rapporto competitivo teorico. Infine è stato scelto $m=10$ arbitrariamente in quanto $m$ non influisce sulla competitività. Adesso verranno mostrati e commentati i risultati ottenuti.
 \subsubsection{Test del rapporto massimo}
+\setcounter{figure}{0} 
+\renewcommand{\thefigure}{\thesubsection.\arabic{figure}}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG(m)_{k}$: $0 < \beta < 0.3$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{max/ALGmk0and0_3m10.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG(m)_{k}$: $0 \leq \beta < 0.6$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{max/ALGmk0_3and0_6m10.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG(m)_{k}$: $0.6 \leq \beta < 0.8$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{max/ALGmk0_6and0_8m10.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test valore massimo $ALG(m)_{k}$: $0.8 \leq \beta < 1$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{max/ALGmk0_8and1m10.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Risultati complessivi dei test valore massimo di $ALG(m)_{k}$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{max/ALGmkTotalm10.png}
+\end{figure}
 Commentiamo i risultati ottenuti. Osservando la Figura B.3.5, che mostra i risultati complessivi di tutti i test, possiamo affermare che i dati confermano il Teorema 4, in quanto nessuno dei rapporti massimi calcolati supera il relativo rapporto competitivo teorico. Inoltre notiamo che le due curve hanno lo stesso andamento fino a $beta \approx 0.59$, seppur distaccate per un certo valore. Dopo il secondo cambio della lunghezza di fase invece l'andamento della curva dei rapporti massimi inizia a decrescere. Quindi più che la lunghezza di fase aumenta più dimiuisce la perdita subita da $ALG(m)_{k}$ rispetto ad $OPT$.
  
 \subsubsection{Test del caso peggiore}
 Descriviamo l'input $I$ utilizzato che rappresenta un caso pessimo. L'algoritmo offline utilizzato per il confronto viene eseguito su $I_{k}$, di conseguenza ciascun job disponibile al tempo $t$ per $OPT^{*}$ lo è anche per $ALG(m)_{k}$. Tuttavia, il numero di macchine parallele di $OPT^{*}$ è esattamente il doppio di $ALG(m)_{k}$ e quindi, in un istante generico $t$, l'algoritmo offline può scedulare fino al doppio di job rispetto a quello online. Inoltre $ALG(m)_{k}$ alla fine di ogni fase pre-abbandona i job che non hanno terminato. Queste due osservazioni implicano che $ALG(m)_{k}$ può subire una perdita di valore rispetto a $OPT^{*}$ quando un insieme di job (al massimo $m$) viene pre-abbandonato oppure quando, ad un istante di tempo qualsiasi $t$, sono disponibili più di $2m$ job. Di conseguenza l'input peggiore consiste nello schedulare esattamente $2m$ job di lunghezza infinita. In questo modo $ALG(m)_{k}$ ottiene valore solo nelle prime due k-fasi. Infatti $ALG(m)_{k}$ su input $I$ schedula $m$ job nella prima fase e $m$ job nella seconda. $OPT^{*}$ invece non pre-abbandona nessun job e schedula $2m$ fin dalla prima fase. Di seguito i risultati ottenuti.
 
+\begin{figure}[H]
+\caption{Test caso peggiore $ALG(m)_{k}$: $0 < \beta < 0.3$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{worst/ALGmk0and0_3m10Worst.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test caso peggiore $ALG(m)_{k}$: $0 \leq \beta < 0.6$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{worst/ALGmk0_3and0_6m10Worst.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test caso peggiore $ALG(m)_{k}$: $0.6 \leq \beta < 0.8$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{worst/ALGmk0_6and0_8m10Worst.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Test caso peggiore $ALG(m)_{k}$: $0.8 \leq \beta < 1$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{worst/ALGmk0_8and1m10Worst.png}
+\end{figure}
+\begin{figure}[H]
+\caption{Risultati complessivi dei test caso peggiore di $ALG(m)_{k}$, $m = 10$}
+\centering
+\includegraphics[scale=0.4]{worst/ALGmkTotalWorst.png}
+\end{figure}
 Dalla Figura B.3.10 possiamo affermare che i dati confermano il Teorema 4, in quanto nessuno dei rapporti calcolati supera il relativo rapporto competitivo teorico.
 \section{Bibliografia}
 1. Susanne Albers, Achim Passen, New Online Algorithms for Story Scheduling
@@ -266,10 +399,11 @@ in Web Advertising. In: Algorithmica (2019) 81:1–25, https://doi.org/10.1007/s
 \begin{flushleft}
 3. Dasgupta, A., Ghosh, A., Nazerzadeh, H., Raghavan, P.: Online story scheduling in web advertising.
 In: Proceedings of the 20th annual ACM-SIAM symposium on discrete algorithms, pp. 1275–1284
-3. 
 \end{flushleft}
+\begin{flushleft}
 4. Sleator, D.D., Tarjan, R.E.: Amortized efficiency of list update and paging rules. Commun. ACM 28,
 202–208 (1985)
+\end{flushleft}
 \appendix
 \section{Lemmi, Corollari e Dimostrazioni}
 \subsection{Dimostrazione del Teorema 1}
@@ -556,166 +690,45 @@ Siamo pronti a dimostrare il Teorema 4.
 
 \section{Grafici}
 
-\subsection{$ALG1_{k}$}
-\renewcommand{\thefigure}{\thesubsection.\arabic{figure}}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG1_{k}$: $0 < \beta < 0.3$}
-\centering
-\includegraphics[scale=0.4]{max/ALG1k0and0_3.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG1_{k}$: $0 \leq \beta < 0.6$}
-\centering
-\includegraphics[scale=0.4]{max/ALG1k0_3and0_6.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG1_{k}$: $0.6 \leq \beta < 0.8$}
-\centering
-\includegraphics[scale=0.4]{max/ALG1k0_6and0_8.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG1_{k}$: $0.8 \leq \beta < 1$}
-\centering
-\includegraphics[scale=0.4]{max/ALG1k0_8and1.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Risultati complessivi dei test valore massimo di $ALG1_{K}$}
-\centering
-\includegraphics[scale=0.4]{max/ALG1kTotal.png}
-\end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG1_{k}$: $0 < \beta < 0.3$}
 \centering
-\includegraphics[scale=0.4]{max/ALG1k0and0_3Worst.png}
+\includegraphics[scale=0.4]{worst/ALG1k0and0_3Worst.png}
 \end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG1_{k}$: $0 \leq \beta < 0.6$}
 \centering
-\includegraphics[scale=0.4]{max/ALG1k0_3and0_6Worst.png}
+\includegraphics[scale=0.4]{worst/ALG1k0_3and0_6Worst.png}
 \end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG1_{k}$: $0.6 \leq \beta < 0.8$}
 \centering
-\includegraphics[scale=0.4]{max/ALG1k0_6and0_8Worst.png}
+\includegraphics[scale=0.4]{worst/ALG1k0_6and0_8Worst.png}
 \end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG1_{k}$: $0.8 \leq \beta < 1$}
 \centering
-\includegraphics[scale=0.4]{max/ALG1k0_8and1Worst.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Risultati complessivi dei test caso peggiore di $ALG1_{K}$}
-\centering
-\includegraphics[scale=0.4]{max/ALG1kTotalWorst.png}
+\includegraphics[scale=0.4]{worst/ALG1k0_8and1Worst.png}
 \end{figure}
 
-\subsection{$ALG2_{k}$}
-\setcounter{figure}{0} 
-\renewcommand{\thefigure}{\thesubsection.\arabic{figure}}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG2_{k}$: $0 < \beta < 0.3$}
-\centering
-\includegraphics[scale=0.4]{max/ALG2k0and0_3.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG2_{k}$: $0 \leq \beta < 0.6$}
-\centering
-\includegraphics[scale=0.4]{max/ALG2k0_3and0_6.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG2_{k}$: $0.6 \leq \beta < 0.8$}
-\centering
-\includegraphics[scale=0.4]{max/ALG2k0_6and0_8.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG2_{k}$: $0.8 \leq \beta < 1$}
-\centering
-\includegraphics[scale=0.4]{max/ALG2k0_8and1.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Risultati complessivi dei test valore massimo di $ALG2_{k}$}
-\centering
-\includegraphics[scale=0.4]{max/ALG2kTotal.png}
-\end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG2_{k}$: $0 < \beta < 0.3$}
 \centering
-\includegraphics[scale=0.4]{max/ALG2k0and0_3Worst.png}
+\includegraphics[scale=0.4]{worst/ALG2k0and0_3Worst.png}
 \end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG2_{k}$: $0 \leq \beta < 0.6$}
 \centering
-\includegraphics[scale=0.4]{max/ALG2k0_3and0_6Worst.png}
+\includegraphics[scale=0.4]{worst/ALG2k0_3and0_6Worst.png}
 \end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG2_{k}$: $0.6 \leq \beta < 0.8$}
 \centering
-\includegraphics[scale=0.4]{max/ALG2k0_6and0_8Worst.png}
+\includegraphics[scale=0.4]{worst/ALG2k0_6and0_8Worst.png}
 \end{figure}
 \begin{figure}[H]
 \caption{Test caso peggiore $ALG2_{k}$: $0.8 \leq \beta < 1$}
 \centering
-\includegraphics[scale=0.4]{max/ALG2k0_8and1Worst.png}
+\includegraphics[scale=0.4]{worst/ALG2k0_8and1Worst.png}
 \end{figure}
-\begin{figure}[H]
-\caption{Risultati complessivi dei test caso peggiore di $ALG2_{k}$}
-\centering
-\includegraphics[scale=0.4]{max/ALG2kTotalWorst.png}
-\end{figure}
-
-\subsection{$ALG(m)_{k}$}
-\setcounter{figure}{0} 
-\renewcommand{\thefigure}{\thesubsection.\arabic{figure}}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG(m)_{k}$: $0 < \beta < 0.3$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0and0_3m10.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG(m)_{k}$: $0 \leq \beta < 0.6$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0_3and0_6m10.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG(m)_{k}$: $0.6 \leq \beta < 0.8$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0_6and0_8m10.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test valore massimo $ALG(m)_{k}$: $0.8 \leq \beta < 1$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0_8and1m10.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Risultati complessivi dei test valore massimo di $ALG(m)_{k}$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmkTotalm10.png}
-\end{figure}
-
-\begin{figure}[H]
-\caption{Test caso peggiore $ALG(m)_{k}$: $0 < \beta < 0.3$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0and0_3m10Worst.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test caso peggiore $ALG(m)_{k}$: $0 \leq \beta < 0.6$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0_3and0_6m10Worst.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test caso peggiore $ALG(m)_{k}$: $0.6 \leq \beta < 0.8$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0_6and0_8m10Worst.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Test caso peggiore $ALG(m)_{k}$: $0.8 \leq \beta < 1$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmk0_8and1m10Worst.png}
-\end{figure}
-\begin{figure}[H]
-\caption{Risultati complessivi dei test caso peggiore di $ALG(m)_{k}$, $m = 10$}
-\centering
-\includegraphics[scale=0.4]{max/ALGmkTotalm10Worst.png}
-\end{figure}
-
 \end{document}
