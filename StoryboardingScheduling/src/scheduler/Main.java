@@ -29,9 +29,9 @@ public class Main {
 		//t2.startWorstCaseTesting();
 		//tm.startWorstCaseTesting();
 		//t1.startTesting2();
-		t2.startWorstCaseTesting();
+		//t2.startWorstCaseTesting();
 		//tm.startWorstCaseTesting();
-		cr.start();
-		//cr.chartCR();
+		//cr.start();
+		cr.chartCR();
 	}
 }

@@ -1,0 +1,123 @@
+\documentclass[openany,titlepage,fleqn,
+	headinclude,12pt,a4paper,BCOR5mm,footinclude]{scrbook}
+\newcommand{\myItalianTitle}{Analisi e Implementazione di Algoritmi Online per lo Story Scheduling}
+\newcommand{\myEnglishTitle}{Analysis and Implementation of Online Algorithms for Story Scheduling\xspace}
+% use the right myDegree option
+\newcommand{\myDegree}{Corso di Laurea in Informatica\xspace}
+%\newcommand{\myDegree}{
+	%Corso di Laurea Specialistica in Scienze e Tecnologie 
+	%dell'Informazione\xspace}
+\newcommand{\myName}{Lorenzo Pratesi\xspace}
+\newcommand{\myProf}{Maria Cecilia Verri\xspace}
+\newcommand{\myOtherProf}{Correlatore\xspace}
+\newcommand{\mySupervisor}{Nome Cognome\xspace}
+\newcommand{\myFaculty}{
+	Scuola di Scienze Matematiche, Fisiche e Naturali\xspace}
+\newcommand{\myUni}{\protect{
+	Universit\`a degli Studi di Firenze}\xspace}
+\newcommand{\myLocation}{Firenze\xspace}
+\newcommand{\myTime}{Anno Accademico 2018-2019\xspace}
+\newcommand{\myVersion}{Version 0.1\xspace}
+
+%--------------------------------------------------------------
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc} 
+\usepackage[square,numbers]{natbib} 
+\usepackage[fleqn]{amsmath}  
+\usepackage{ellipsis}
+\usepackage{listings}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{appendix}
+\usepackage{siunitx}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%
+\usepackage{helvet}
+\usepackage{float}
+%--------------------------------------------------------------
+\usepackage{dia-classicthesis-ldpkg}
+%--------------------------------------------------------------
+% Options for classicthesis.sty:
+% tocaligned eulerchapternumbers drafting linedheaders 
+% listsseparated subfig nochapters beramono eulermath parts 
+% minionpro pdfspacing
+\usepackage[eulerchapternumbers,linedheaders,subfig,beramono,eulermath,
+parts]{classicthesis}
+%--------------------------------------------------------------
+\newlength{\abcd} % for ab..z string length calculation
+% how all the floats will be aligned
+\newcommand{\myfloatalign}{\centering} 
+\setlength{\extrarowheight}{3pt} % increase table row height
+\captionsetup{format=hang,font=small}
+%--------------------------------------------------------------
+% Layout setting
+%--------------------------------------------------------------
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	ignoremp,
+	bindingoffset = 1cm, 
+	textwidth     = 13.5cm,
+	textheight    = 21.5cm,
+	tmargin       = 4cm    % top margin 
+}
+
+\lstset{
+  	frame=tb,
+	language=Matlab,
+  	aboveskip=3mm,
+  	belowskip=3mm,
+  	showstringspaces=false,
+  	columns=flexible,
+  	basicstyle={\small\ttfamily},
+  	numbers=none,
+  	breaklines=true,
+  	breakatwhitespace=true,
+  	tabsize=3
+}
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+\newcommand*{\N}{\mathbb{N}}
+\renewcommand*{\figureformat}{%
+  \figurename~\thefigure%
+%  \autodot% DELETED
+}
+%--------------------------------------------------------------
+\begin{document}
+\frenchspacing
+\raggedbottom
+%\pagenumbering{plain}
+\pagestyle{plain}
+%--------------------------------------------------------------
+% Frontmatter
+%--------------------------------------------------------------
+
+\pagestyle{scrheadings}
+%--------------------------------------------------------------
+% Mainmatter
+%--------------------------------------------------------------
+
+% use \cleardoublepage here to avoid problems with pdfbookmark''
+%\include{intro} % use \myChapter command instead of \chapter
+
+\pagestyle{empty}
+\begin{center}
+\begingroup
+\color{Maroon}\spacedallcaps{\myItalianTitle} \\ $\ $\\
+\endgroup
+\spacedlowsmallcaps{riassunto elaborato finale}
+\vfill
+Candidato:  \emph{Lorenzo Pratesi}
+
+Relatore:  \emph{Maria Cecilia Verri}
+
+E-mail relatore:  \emph{mariacecilia.verri@unifi.it}
+\end{center}      
+\vfill
+La pubblicità è ormai parte integrante del web e assume un ruolo determinante sia per le imprese, le quali possono raggiungere facilmente un vasto pubblico con costi inferiori rispetto ai mezzi tradizionali, e sia per gli utenti finali i quali possono usufruire di determinati servizi senza dover provvedere a spese. Uno dei vantaggi principali della pubblicità su Internet  è quello della tracciabilità dei risultati, ovvero dell'effetto che ha sul pubblico. Questo avviene grazie agli advertising server. In questo documento verranno analizzati alcuni algoritmi per lo storyboarding, ovvero un tipo particolare di pubblicità sul web. Lo storyboarding permette ad inserzionisti di presentare sequenze di ads (storie) senza interruzioni su una posizione di rilievo di una pagina web. Ogni volta che un utente accede a una pagina web, vengono attivate delle storie in base alla sua cronologia di navigazione. Tipicamente molti inserzionisti competono per utilizzare tale posizione per un certo continuativo periodo di tempo. L’obiettivo di un advertising server è quello di costruire uno schedule che massimizzi il risultato aspettato. 
+
+In questo documento verranno implementati e testati alcuni algoritmi online per lo storyboarding. Inizialmente verranno descritti tre algoritmi online e due algoritmi offline per la risoluzione del problema dello storyboarding proposti da Susanne Albers e Achim Passen in [1]. Ciascun algoritmo online possiede un rapporto competitivo ben definito. Successivamente verrà mostrata e descritta un'implementazione per ciascun algoritmo online e offline. Il linguaggio di programmazione utilizzato è Java. Infine verranno mostrati i risultati di due tipi di test effettuati su ciascun algoritmo online. Ogni algoritmo online è stato confrontato con un relativo algoritmo offline in base a criteri ben definiti. Lo scopo principale di questi test è quello di poter verificare empiricamente che il rapporto competitivo di ciascun algoritmo online sia effettivamente quello dimostrato.
+\end{document}

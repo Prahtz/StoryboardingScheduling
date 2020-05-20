@@ -36,22 +36,23 @@ public class ChartResults {
 		double x2[] = new double[n];
 		int i = 0;
 		while(beta < 1) {
-			int k= Service.generateKAlg2k(beta);
+			int k= Service.generateKAlgmk(beta);
 			betas[i] = beta;
-			x0[i] = 1/Math.pow(beta,k-1);
-			x1[i] = 1/(1 - Math.pow(beta, 2*k));
-			x2[i] = 1 + (Math.pow(beta, 3*k) / (1 - Math.pow(beta, k)));
-
+			x0[i] = (1/Math.pow(beta, k-1))* 2/(1 - Math.pow(beta,2*k));
 			i++;
 			beta = beta + 0.001;
 		}
-		XYChart chart = new XYChartBuilder().width(800).height(600).title("CR").xAxisTitle("Betas").yAxisTitle("Ratios").build();
+		String fileName = "worst/AlgmkTotalWorst.csv";
+		LinkedList<Results> resultsList = getResultsList(fileName);
+		double[] xData = getArrayOfBetas(resultsList);
+	    fileName = fileName.substring(6, fileName.length() - 4);
+	    
+	    XYChart chart = new XYChartBuilder().width(800).height(600).title(fileName).xAxisTitle("Betas").yAxisTitle("Ratios").build();
 	    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
 	    chart.getStyler().setMarkerSize(0);
-	    //chart.addSeries("1", betas, x0);
-	    //chart.addSeries("2", betas, x1);
-	    chart.addSeries("3", betas, x2);
-	    BitmapEncoder.saveBitmap(chart, "chartCR", BitmapFormat.PNG);
+	    chart.addSeries("Maximum Ratios", xData, getArrayOfMaximumRatios(resultsList));
+	    chart.addSeries("3", betas, x0);
+	    BitmapEncoder.saveBitmap(chart, fileName, BitmapFormat.PNG);
 	}
 	private double max(double a, double b, double c) {
 		if(a >= b && a >= c)
